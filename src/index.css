@@ -2,95 +2,89 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* AI Automation Platform Design System - Dark-first, developer-focused theme */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Dark theme as default for developer experience */
+    --background: 220 13% 9%;
+    --foreground: 220 13% 95%;
+    
+    /* Workspace colors */
+    --workspace: 220 13% 8%;
+    --workspace-secondary: 220 13% 12%;
+    --workspace-accent: 220 13% 15%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 220 13% 12%;
+    --card-foreground: 220 13% 95%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 220 13% 12%;
+    --popover-foreground: 220 13% 95%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 220 13% 9%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 220 13% 15%;
+    --secondary-foreground: 220 13% 95%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 220 13% 15%;
+    --muted-foreground: 220 9% 55%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 220 13% 15%;
+    --accent-foreground: 220 13% 95%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 63% 50%;
+    --destructive-foreground: 220 13% 95%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 220 13% 20%;
+    --input: 220 13% 15%;
+    --ring: 217 91% 60%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
+    
+    /* AI Model brand colors */
+    --openai: 120 100% 35%;
+    --claude: 25 95% 53%;
+    --gemini: 228 90% 60%;
+    --grok: 280 100% 70%;
+    --deepseek: 195 100% 50%;
+    
+    /* Node type colors */
+    --node-text: 120 60% 50%;
+    --node-image: 280 60% 50%;
+    --node-code: 200 60% 50%;
+    --node-data: 25 60% 50%;
+    --node-logic: 330 60% 50%;
+    
+    /* Workspace specific */
+    --node-shadow: 220 25% 4%;
+    --connection-primary: 217 91% 60%;
+    --connection-success: 120 60% 50%;
+    --connection-error: 0 63% 50%;
+    
+    /* Gradients */
+    --gradient-workspace: linear-gradient(135deg, hsl(var(--workspace)), hsl(var(--workspace-secondary)));
+    --gradient-node: linear-gradient(135deg, hsl(var(--card)), hsl(var(--workspace-accent)));
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(217 91% 45%));
 
-    --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Sidebar for AI platform */
+    --sidebar-background: 220 13% 10%;
+    --sidebar-foreground: 220 13% 85%;
+    --sidebar-primary: 217 91% 60%;
+    --sidebar-primary-foreground: 220 13% 9%;
+    --sidebar-accent: 220 13% 15%;
+    --sidebar-accent-foreground: 220 13% 95%;
+    --sidebar-border: 220 13% 20%;
+    --sidebar-ring: 217 91% 60%;
+    
+    /* Animations & Transitions */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* Shadows */
+    --shadow-node: 0 4px 12px hsl(var(--node-shadow) / 0.4);
+    --shadow-panel: 0 8px 25px hsl(var(--node-shadow) / 0.3);
+    --shadow-glow: 0 0 20px hsl(var(--primary) / 0.3);
   }
 }
 
@@ -100,6 +94,133 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-mono;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
   }
+
+  /* Custom scrollbars for dark theme */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--workspace));
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted));
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground));
+  }
+}
+
+/* React Flow custom styles */
+.react-flow {
+  background: var(--gradient-workspace);
+}
+
+.react-flow__node {
+  background: var(--gradient-node);
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-node);
+  color: hsl(var(--foreground));
+  font-family: inherit;
+}
+
+.react-flow__node.selected {
+  box-shadow: var(--shadow-glow);
+  border-color: hsl(var(--primary));
+}
+
+.react-flow__edge-path {
+  stroke: hsl(var(--connection-primary));
+  stroke-width: 2;
+}
+
+.react-flow__edge.selected .react-flow__edge-path {
+  stroke: hsl(var(--primary));
+  stroke-width: 3;
+}
+
+.react-flow__handle {
+  background: hsl(var(--primary));
+  border: 2px solid hsl(var(--workspace));
+  width: 10px;
+  height: 10px;
+}
+
+.react-flow__handle.connectingfrom {
+  background: hsl(var(--connection-success));
+}
+
+.react-flow__minimap {
+  background: hsl(var(--workspace-secondary));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+}
+
+.react-flow__controls {
+  background: hsl(var(--workspace-secondary));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+}
+
+.react-flow__controls button {
+  background: hsl(var(--card));
+  border-bottom: 1px solid hsl(var(--border));
+  color: hsl(var(--foreground));
+  transition: var(--transition-fast);
+}
+
+.react-flow__controls button:hover {
+  background: hsl(var(--accent));
+}
+
+/* Workspace layout utilities */
+.workspace-layout {
+  display: grid;
+  grid-template-areas: 
+    "toolbar toolbar toolbar"
+    "sidebar canvas properties"
+    "sidebar logs logs";
+  grid-template-rows: auto 1fr auto;
+  grid-template-columns: 300px 1fr 300px;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.workspace-sidebar {
+  grid-area: sidebar;
+  background: hsl(var(--sidebar-background));
+  border-right: 1px solid hsl(var(--border));
+}
+
+.workspace-canvas {
+  grid-area: canvas;
+  background: var(--gradient-workspace);
+}
+
+.workspace-properties {
+  grid-area: properties;
+  background: hsl(var(--sidebar-background));
+  border-left: 1px solid hsl(var(--border));
+}
+
+.workspace-toolbar {
+  grid-area: toolbar;
+  background: hsl(var(--workspace-secondary));
+  border-bottom: 1px solid hsl(var(--border));
+}
+
+.workspace-logs {
+  grid-area: logs;
+  background: hsl(var(--workspace));
+  border-top: 1px solid hsl(var(--border));
+  max-height: 250px;
+  min-height: 150px;
 }
