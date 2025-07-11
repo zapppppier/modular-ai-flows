@@ -1,7 +1,13 @@
 import { memo } from 'react';
 import { Handle, Position, NodeProps } from '@xyflow/react';
-import { Bot, Brain, Zap } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+
+// Import brand logos
+import openaiLogo from '@/assets/logos/openai-logo.png';
+import claudeLogo from '@/assets/logos/claude-logo.png';
+import geminiLogo from '@/assets/logos/gemini-logo.png';
+import grokLogo from '@/assets/logos/grok-logo.png';
+import deepseekLogo from '@/assets/logos/deepseek-logo.png';
 
 interface AIModelNodeData {
   label?: string;
@@ -11,12 +17,12 @@ interface AIModelNodeData {
   description?: string;
 }
 
-const modelIcons: { [key: string]: React.ComponentType<any> } = {
-  openai: Bot,
-  claude: Brain,
-  gemini: Bot,
-  grok: Zap,
-  deepseek: Brain,
+const modelLogos: { [key: string]: string } = {
+  openai: openaiLogo,
+  claude: claudeLogo,
+  gemini: geminiLogo,
+  grok: grokLogo,
+  deepseek: deepseekLogo,
 };
 
 const modelColors: { [key: string]: string } = {
@@ -29,7 +35,7 @@ const modelColors: { [key: string]: string } = {
 
 export const AIModelNode = memo(({ data, selected }: NodeProps) => {
   const nodeData = data as AIModelNodeData;
-  const IconComponent = modelIcons[nodeData.model || 'openai'] || Bot;
+  const logoSrc = modelLogos[nodeData.model || 'openai'] || modelLogos.openai;
   const modelColor = modelColors[nodeData.model || 'openai'] || 'hsl(var(--primary))';
 
   return (
@@ -52,14 +58,16 @@ export const AIModelNode = memo(({ data, selected }: NodeProps) => {
       {/* Node Header */}
       <div className="flex items-center gap-3 mb-3">
         <div 
-          className="w-8 h-8 rounded-md flex items-center justify-center"
+          className="w-8 h-8 rounded-md flex items-center justify-center p-1 bg-white"
           style={{ 
-            backgroundColor: `${modelColor}20`, 
-            color: modelColor,
             border: `1px solid ${modelColor}40`
           }}
         >
-          <IconComponent className="w-4 h-4" />
+          <img 
+            src={logoSrc} 
+            alt={`${nodeData.model} logo`}
+            className="w-full h-full object-contain"
+          />
         </div>
         <div className="flex-1">
           <h3 className="font-semibold text-sm text-foreground">

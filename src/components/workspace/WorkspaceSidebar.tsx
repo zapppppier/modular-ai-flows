@@ -1,9 +1,7 @@
 import { useState } from 'react';
 import { 
-  Bot, 
-  Brain, 
-  Code, 
   FileText, 
+  Code, 
   Image, 
   Database, 
   GitBranch,
@@ -16,12 +14,20 @@ import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 
+// Import brand logos
+import openaiLogo from '@/assets/logos/openai-logo.png';
+import claudeLogo from '@/assets/logos/claude-logo.png';
+import geminiLogo from '@/assets/logos/gemini-logo.png';
+import grokLogo from '@/assets/logos/grok-logo.png';
+import deepseekLogo from '@/assets/logos/deepseek-logo.png';
+
 interface NodeTemplate {
   id: string;
   type: string;
   label: string;
   description: string;
-  icon: React.ComponentType<any>;
+  icon?: React.ComponentType<any>;
+  logo?: string;
   model?: string;
   color: string;
 }
@@ -33,7 +39,7 @@ const nodeTemplates: { [key: string]: NodeTemplate[] } = {
       type: 'aiModel',
       label: 'GPT-4',
       description: 'OpenAI\'s most capable model',
-      icon: Bot,
+      logo: openaiLogo,
       model: 'openai',
       color: 'hsl(var(--openai))',
     },
@@ -42,7 +48,7 @@ const nodeTemplates: { [key: string]: NodeTemplate[] } = {
       type: 'aiModel',
       label: 'Claude 3',
       description: 'Anthropic\'s advanced reasoning model',
-      icon: Brain,
+      logo: claudeLogo,
       model: 'claude',
       color: 'hsl(var(--claude))',
     },
@@ -51,7 +57,7 @@ const nodeTemplates: { [key: string]: NodeTemplate[] } = {
       type: 'aiModel',
       label: 'Gemini Pro',
       description: 'Google\'s multimodal AI',
-      icon: Bot,
+      logo: geminiLogo,
       model: 'gemini',
       color: 'hsl(var(--gemini))',
     },
@@ -60,7 +66,7 @@ const nodeTemplates: { [key: string]: NodeTemplate[] } = {
       type: 'aiModel',
       label: 'Grok',
       description: 'xAI\'s conversational AI',
-      icon: Bot,
+      logo: grokLogo,
       model: 'grok',
       color: 'hsl(var(--grok))',
     },
@@ -69,7 +75,7 @@ const nodeTemplates: { [key: string]: NodeTemplate[] } = {
       type: 'aiModel',
       label: 'DeepSeek',
       description: 'Advanced reasoning model',
-      icon: Brain,
+      logo: deepseekLogo,
       model: 'deepseek',
       color: 'hsl(var(--deepseek))',
     },
@@ -202,9 +208,21 @@ export const WorkspaceSidebar = ({ onAddNode }: WorkspaceSidebarProps) => {
                       <div className="flex items-start gap-3">
                         <div 
                           className="w-8 h-8 rounded-md flex items-center justify-center flex-shrink-0"
-                          style={{ backgroundColor: `${template.color}20`, color: template.color }}
+                          style={{ 
+                            backgroundColor: template.logo ? '#ffffff' : `${template.color}20`, 
+                            color: template.color,
+                            border: `1px solid ${template.color}40`
+                          }}
                         >
-                          <IconComponent className="w-4 h-4" />
+                          {template.logo ? (
+                            <img 
+                              src={template.logo} 
+                              alt={`${template.label} logo`}
+                              className="w-6 h-6 object-contain"
+                            />
+                          ) : (
+                            IconComponent && <IconComponent className="w-4 h-4" />
+                          )}
                         </div>
                         <div className="flex-1 min-w-0">
                           <h4 className="text-sm font-medium text-foreground group-hover:text-accent-foreground">
