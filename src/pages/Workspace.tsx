@@ -20,11 +20,17 @@ import { WorkspaceProperties } from '@/components/workspace/WorkspaceProperties'
 import { WorkspaceLogs } from '@/components/workspace/WorkspaceLogs';
 import { AIModelNode } from '@/components/workspace/nodes/AIModelNode';
 import { LogicNode } from '@/components/workspace/nodes/LogicNode';
+import { IntegrationNode } from '@/components/workspace/nodes/IntegrationNode';
+import { UtilityNode } from '@/components/workspace/nodes/UtilityNode';
+import { DataNode } from '@/components/workspace/nodes/DataNode';
 
 // Node types for the workspace
 const nodeTypes = {
   aiModel: AIModelNode,
   logic: LogicNode,
+  integration: IntegrationNode,
+  utility: UtilityNode,
+  data: DataNode,
 };
 
 // Initial workspace setup

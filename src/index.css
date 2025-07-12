@@ -55,6 +55,9 @@
     --node-code: 200 60% 50%;
     --node-data: 25 60% 50%;
     --node-logic: 330 60% 50%;
+    --node-integration: 180 60% 50%;
+    --node-utility: 60 60% 50%;
+    --node-communication: 240 60% 50%;
     
     /* Workspace specific */
     --node-shadow: 220 25% 4%;
