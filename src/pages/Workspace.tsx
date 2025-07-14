@@ -18,6 +18,7 @@ import { WorkspaceToolbar } from '@/components/workspace/WorkspaceToolbar';
 import { WorkspaceSidebar } from '@/components/workspace/WorkspaceSidebar';
 import { WorkspaceProperties } from '@/components/workspace/WorkspaceProperties';
 import { WorkspaceLogs } from '@/components/workspace/WorkspaceLogs';
+import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@/components/ui/resizable';
 import { AIModelNode } from '@/components/workspace/nodes/AIModelNode';
 import { LogicNode } from '@/components/workspace/nodes/LogicNode';
 import { IntegrationNode } from '@/components/workspace/nodes/IntegrationNode';
@@ -112,69 +113,96 @@ const Workspace = () => {
   }, []);
 
   return (
-    <div className="workspace-layout">
+    <div className="h-screen flex flex-col bg-workspace">
+      {/* Fixed Toolbar */}
       <WorkspaceToolbar 
         onRun={onRunWorkflow}
         onSave={onSaveWorkflow}
         isRunning={isRunning}
       />
       
-      <WorkspaceSidebar 
-        onAddNode={(nodeData) => {
-          const newNode: Node = {
-            id: `node_${Date.now()}`,
-            type: nodeData.type,
-            position: { x: Math.random() * 400, y: Math.random() * 400 },
-            data: nodeData,
-          };
-          setNodes(nds => [...nds, newNode]);
-          setLogs(prev => [...prev, `[INFO] Added ${nodeData.label} node`]);
-        }}
-      />
-      
-      <div className="workspace-canvas">
-        <ReactFlow
-          nodes={nodes}
-          edges={edges}
-          onNodesChange={onNodesChange}
-          onEdgesChange={onEdgesChange}
-          onConnect={onConnect}
-          onNodeClick={onNodeClick}
-          onPaneClick={onCanvasClick}
-          nodeTypes={nodeTypes}
-          fitView
-          className="react-flow"
-        >
-          <Background 
-            color="hsl(var(--muted-foreground))" 
-            gap={20} 
-            size={1}
+      {/* Resizable Main Layout */}
+      <ResizablePanelGroup direction="horizontal" className="flex-1">
+        {/* Sidebar Panel */}
+        <ResizablePanel defaultSize={25} minSize={15} maxSize={40}>
+          <WorkspaceSidebar 
+            onAddNode={(nodeData) => {
+              const newNode: Node = {
+                id: `node_${Date.now()}`,
+                type: nodeData.type,
+                position: { x: Math.random() * 400, y: Math.random() * 400 },
+                data: nodeData,
+              };
+              setNodes(nds => [...nds, newNode]);
+              setLogs(prev => [...prev, `[INFO] Added ${nodeData.label} node`]);
+            }}
           />
-          <Controls />
-          <MiniMap 
-            nodeStrokeColor="hsl(var(--primary))"
-            nodeColor="hsl(var(--card))"
-            nodeBorderRadius={8}
-            maskColor="hsl(var(--workspace) / 0.8)"
+        </ResizablePanel>
+        
+        <ResizableHandle withHandle />
+        
+        {/* Main Content Panel (Canvas + Logs) */}
+        <ResizablePanel defaultSize={50} minSize={30}>
+          <ResizablePanelGroup direction="vertical">
+            {/* Canvas Panel */}
+            <ResizablePanel defaultSize={70} minSize={40}>
+              <div className="h-full bg-workspace">
+                <ReactFlow
+                  nodes={nodes}
+                  edges={edges}
+                  onNodesChange={onNodesChange}
+                  onEdgesChange={onEdgesChange}
+                  onConnect={onConnect}
+                  onNodeClick={onNodeClick}
+                  onPaneClick={onCanvasClick}
+                  nodeTypes={nodeTypes}
+                  fitView
+                  className="react-flow h-full w-full"
+                >
+                  <Background 
+                    color="hsl(var(--muted-foreground))" 
+                    gap={20} 
+                    size={1}
+                  />
+                  <Controls />
+                  <MiniMap 
+                    nodeStrokeColor="hsl(var(--primary))"
+                    nodeColor="hsl(var(--card))"
+                    nodeBorderRadius={8}
+                    maskColor="hsl(var(--workspace) / 0.8)"
+                  />
+                </ReactFlow>
+              </div>
+            </ResizablePanel>
+            
+            <ResizableHandle withHandle />
+            
+            {/* Logs Panel */}
+            <ResizablePanel defaultSize={30} minSize={15} maxSize={60}>
+              <WorkspaceLogs logs={logs} onClear={() => setLogs([])} />
+            </ResizablePanel>
+          </ResizablePanelGroup>
+        </ResizablePanel>
+        
+        <ResizableHandle withHandle />
+        
+        {/* Properties Panel */}
+        <ResizablePanel defaultSize={25} minSize={15} maxSize={40}>
+          <WorkspaceProperties 
+            selectedNode={selectedNode}
+            onUpdateNode={(nodeId, data) => {
+              setNodes(nds => 
+                nds.map(node => 
+                  node.id === nodeId 
+                    ? { ...node, data: { ...node.data, ...data } }
+                    : node
+                )
+              );
+              setLogs(prev => [...prev, `[INFO] Updated node ${nodeId}`]);
+            }}
           />
-        </ReactFlow>
-      </div>
-      
-      <WorkspaceProperties 
-        selectedNode={selectedNode}
-        onUpdateNode={(nodeId, data) => {
-          setNodes(nds => 
-            nds.map(node => 
-              node.id === nodeId 
-                ? { ...node, data: { ...node.data, ...data } }
-                : node
-            )
-          );
-          setLogs(prev => [...prev, `[INFO] Updated node ${nodeId}`]);
-        }}
-      />
-      
-      <WorkspaceLogs logs={logs} onClear={() => setLogs([])} />
+        </ResizablePanel>
+      </ResizablePanelGroup>
     </div>
   );
 };

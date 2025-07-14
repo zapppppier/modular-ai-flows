@@ -184,46 +184,26 @@
   background: hsl(var(--accent));
 }
 
-/* Workspace layout utilities */
-.workspace-layout {
-  display: grid;
-  grid-template-areas: 
-    "toolbar toolbar toolbar"
-    "sidebar canvas properties"
-    "sidebar logs logs";
-  grid-template-rows: auto 1fr auto;
-  grid-template-columns: 300px 1fr 300px;
-  height: 100vh;
-  overflow: hidden;
-}
-
+/* Workspace layout utilities - Using Flexbox with Resizable Panels */
 .workspace-sidebar {
-  grid-area: sidebar;
   background: hsl(var(--sidebar-background));
   border-right: 1px solid hsl(var(--border));
-}
-
-.workspace-canvas {
-  grid-area: canvas;
-  background: var(--gradient-workspace);
+  height: 100%;
 }
 
 .workspace-properties {
-  grid-area: properties;
   background: hsl(var(--sidebar-background));
   border-left: 1px solid hsl(var(--border));
+  height: 100%;
 }
 
 .workspace-toolbar {
-  grid-area: toolbar;
   background: hsl(var(--workspace-secondary));
   border-bottom: 1px solid hsl(var(--border));
 }
 
 .workspace-logs {
-  grid-area: logs;
   background: hsl(var(--workspace));
   border-top: 1px solid hsl(var(--border));
-  max-height: 250px;
-  min-height: 150px;
+  height: 100%;
 }
