@@ -41,6 +41,21 @@ import claudeLogo from '@/assets/logos/claude-logo.png';
 import geminiLogo from '@/assets/logos/gemini-logo.png';
 import grokLogo from '@/assets/logos/grok-logo.png';
 import deepseekLogo from '@/assets/logos/deepseek-logo.png';
+import slackLogo from '@/assets/logos/slack-logo.svg';
+import discordLogo from '@/assets/logos/discord-logo.png';
+import notionLogo from '@/assets/logos/notion-logo.png';
+import gmailLogo from '@/assets/logos/gmail-logo.svg';
+import teamsLogo from '@/assets/logos/teams-logo.svg';
+import twilioLogo from '@/assets/logos/twilio-logo.svg';
+import hubspotLogo from '@/assets/logos/hubspot-logo.svg';
+import googleDriveLogo from '@/assets/logos/google-drive-logo.svg';
+import dropboxLogo from '@/assets/logos/dropbox-logo.svg';
+import githubLogo from '@/assets/logos/github-logo.png';
+import stripeLogo from '@/assets/logos/stripe-logo.svg';
+import shopifyLogo from '@/assets/logos/shopify-logo.svg';
+import asanaLogo from '@/assets/logos/asana-logo.svg';
+import facebookLogo from '@/assets/logos/facebook-logo.png';
+import twitterLogo from '@/assets/logos/twitter-logo.png';
 
 interface NodeTemplate {
   id: string;
@@ -133,7 +148,7 @@ const nodeTemplates: { [key: string]: NodeTemplate[] } = {
       type: 'integration',
       label: 'Slack',
       description: 'Send messages and manage Slack channels',
-      icon: MessageSquare,
+      logo: slackLogo,
       color: 'hsl(142, 71%, 45%)',
     },
     {
@@ -141,7 +156,7 @@ const nodeTemplates: { [key: string]: NodeTemplate[] } = {
       type: 'integration',
       label: 'Discord',
       description: 'Post messages and manage Discord servers',
-      icon: Hash,
+      logo: discordLogo,
       color: 'hsl(227, 58%, 65%)',
     },
     {
@@ -149,7 +164,7 @@ const nodeTemplates: { [key: string]: NodeTemplate[] } = {
       type: 'integration',
       label: 'Notion',
       description: 'Create and update Notion pages and databases',
-      icon: FileText,
+      logo: notionLogo,
       color: 'hsl(0, 0%, 0%)',
     },
     {
@@ -175,7 +190,7 @@ const nodeTemplates: { [key: string]: NodeTemplate[] } = {
       type: 'integration',
       label: 'Gmail',
       description: 'Send and receive emails via Gmail',
-      icon: Mail,
+      logo: gmailLogo,
       color: 'hsl(4, 90%, 58%)',
     },
     {
@@ -183,7 +198,7 @@ const nodeTemplates: { [key: string]: NodeTemplate[] } = {
       type: 'integration',
       label: 'Microsoft Teams',
       description: 'Send messages to Teams channels',
-      icon: MessageCircle,
+      logo: teamsLogo,
       color: 'hsl(221, 100%, 49%)',
     },
     {
@@ -191,7 +206,7 @@ const nodeTemplates: { [key: string]: NodeTemplate[] } = {
       type: 'integration',
       label: 'Twilio',
       description: 'Send SMS and make phone calls',
-      icon: Phone,
+      logo: twilioLogo,
       color: 'hsl(0, 78%, 52%)',
     },
   ],
@@ -235,7 +250,7 @@ const nodeTemplates: { [key: string]: NodeTemplate[] } = {
       type: 'integration',
       label: 'Google Drive',
       description: 'Upload and manage Google Drive files',
-      icon: FolderOpen,
+      logo: googleDriveLogo,
       color: 'hsl(220, 100%, 50%)',
     },
     {
@@ -243,7 +258,7 @@ const nodeTemplates: { [key: string]: NodeTemplate[] } = {
       type: 'integration',
       label: 'Dropbox',
       description: 'Sync and manage Dropbox files',
-      icon: Cloud,
+      logo: dropboxLogo,
       color: 'hsl(207, 100%, 50%)',
     },
     {
@@ -261,7 +276,7 @@ const nodeTemplates: { [key: string]: NodeTemplate[] } = {
       type: 'integration',
       label: 'HubSpot',
       description: 'Manage CRM contacts and deals',
-      icon: Users,
+      logo: hubspotLogo,
       color: 'hsl(13, 100%, 50%)',
     },
     {
@@ -279,6 +294,22 @@ const nodeTemplates: { [key: string]: NodeTemplate[] } = {
       description: 'Trigger Zapier workflows',
       icon: Zap,
       color: 'hsl(29, 100%, 50%)',
+    },
+    {
+      id: 'facebook-integration',
+      type: 'integration',
+      label: 'Facebook',
+      description: 'Post to Facebook pages and groups',
+      logo: facebookLogo,
+      color: 'hsl(221, 44%, 41%)',
+    },
+    {
+      id: 'twitter-integration',
+      type: 'integration',
+      label: 'Twitter/X',
+      description: 'Post tweets and manage Twitter account',
+      logo: twitterLogo,
+      color: 'hsl(0, 0%, 0%)',
     },
   ],
   'Utilities': [

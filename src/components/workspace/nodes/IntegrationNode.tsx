@@ -10,6 +10,7 @@ interface IntegrationNodeData {
   connected?: boolean;
   status?: 'connected' | 'disconnected' | 'error';
   icon?: React.ComponentType<any>;
+  logo?: string;
   color?: string;
 }
 
@@ -51,12 +52,20 @@ export const IntegrationNode = memo(({ data, selected }: NodeProps) => {
         <div 
           className="w-8 h-8 rounded-md flex items-center justify-center"
           style={{ 
-            backgroundColor: `${nodeColor}20`, 
+            backgroundColor: nodeData.logo ? '#ffffff' : `${nodeColor}20`, 
             color: nodeColor,
             border: `1px solid ${nodeColor}40`
           }}
         >
-          <IconComponent className="w-4 h-4" />
+          {nodeData.logo ? (
+            <img 
+              src={nodeData.logo} 
+              alt={`${nodeData.label} logo`}
+              className="w-6 h-6 object-contain"
+            />
+          ) : (
+            <IconComponent className="w-4 h-4" />
+          )}
         </div>
         <div className="flex-1">
           <div className="flex items-center gap-2">
