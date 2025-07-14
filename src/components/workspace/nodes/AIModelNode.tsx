@@ -58,9 +58,9 @@ export const AIModelNode = memo(({ data, selected }: NodeProps) => {
       {/* Node Header */}
       <div className="flex items-center gap-3 mb-3">
         <div 
-          className="w-8 h-8 rounded-md flex items-center justify-center p-1 bg-white"
+          className="w-8 h-8 rounded-md flex items-center justify-center p-1"
           style={{ 
-            border: `1px solid ${modelColor}40`
+            backgroundColor: 'transparent'
           }}
         >
           <img 

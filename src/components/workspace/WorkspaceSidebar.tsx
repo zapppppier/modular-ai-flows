@@ -473,9 +473,9 @@ export const WorkspaceSidebar = ({ onAddNode }: WorkspaceSidebarProps) => {
                         <div 
                           className="w-8 h-8 rounded-md flex items-center justify-center flex-shrink-0"
                           style={{ 
-                            backgroundColor: template.logo ? '#ffffff' : `${template.color}20`, 
+                            backgroundColor: template.logo ? 'transparent' : `${template.color}20`, 
                             color: template.color,
-                            border: `1px solid ${template.color}40`
+                            border: template.logo ? 'none' : `1px solid ${template.color}40`
                           }}
                         >
                           {template.logo ? (
