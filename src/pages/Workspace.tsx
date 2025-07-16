@@ -262,12 +262,6 @@ const Workspace = () => {
                     size={1}
                   />
                   <Controls />
-                  <MiniMap 
-                    nodeStrokeColor="hsl(var(--primary))"
-                    nodeColor="hsl(var(--card))"
-                    nodeBorderRadius={8}
-                    maskColor="hsl(var(--workspace) / 0.8)"
-                  />
                 </ReactFlow>
               </div>
             </ResizablePanel>
