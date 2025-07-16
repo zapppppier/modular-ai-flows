@@ -1,4 +1,4 @@
-import { Play, Square, Save, Download, Upload, Settings } from 'lucide-react';
+import { Play, Square, Save, Download, Upload, Settings, RotateCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
@@ -6,10 +6,11 @@ import { Badge } from '@/components/ui/badge';
 interface WorkspaceToolbarProps {
   onRun: () => void;
   onSave: () => void;
+  onClear: () => void;
   isRunning: boolean;
 }
 
-export const WorkspaceToolbar = ({ onRun, onSave, isRunning }: WorkspaceToolbarProps) => {
+export const WorkspaceToolbar = ({ onRun, onSave, onClear, isRunning }: WorkspaceToolbarProps) => {
   return (
     <div className="workspace-toolbar p-3 flex items-center justify-between relative z-10">
       <div className="flex items-center gap-3">
@@ -76,6 +77,18 @@ export const WorkspaceToolbar = ({ onRun, onSave, isRunning }: WorkspaceToolbarP
           className="hover:scale-105 transition-all duration-200 backdrop-blur-sm hover:bg-accent/80"
         >
           <Upload className="w-4 h-4" />
+        </Button>
+        
+        <Separator orientation="vertical" className="h-6 bg-border/50" />
+        
+        <Button 
+          variant="outline" 
+          size="sm"
+          onClick={onClear}
+          className="hover:scale-105 transition-all duration-200 backdrop-blur-sm hover:bg-destructive/80 hover:text-destructive-foreground"
+          title="Clear Canvas"
+        >
+          <RotateCcw className="w-4 h-4" />
         </Button>
         
         <Separator orientation="vertical" className="h-6 bg-border/50" />

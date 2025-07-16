@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Node } from '@xyflow/react';
-import { Settings, TestTube, Play, Info, ChevronDown, ChevronRight, Zap, Key, Wifi, WifiOff, DollarSign, Clock } from 'lucide-react';
+import { 
+  Settings, TestTube, Play, Info, ChevronDown, ChevronRight, Zap, Key, Wifi, WifiOff, DollarSign, Clock,
+  GitBranch, Database, Filter, Globe, Link, FileText, Timer, FileSearch, 
+  Eye, Shield, Save, Cable, Code, AlertTriangle, Gauge
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -418,6 +422,346 @@ ${result.output}
                     onChange={(e) => onUpdateNode(selectedNode.id, { systemPrompt: e.target.value })}
                     className="min-h-[90px] text-sm resize-none bg-workspace-secondary/30 border-border/50 focus:border-primary/50"
                     placeholder="You are a helpful AI assistant..."
+                  />
+                </FormField>
+              </PropertySection>
+
+              <Separator className="bg-border/30" />
+            </>
+          )}
+
+          {/* Node-specific Configuration */}
+          {selectedNode.type === 'logic' && (
+            <>
+              <PropertySection 
+                id="logic-config" 
+                title="Logic Configuration" 
+                description="Configure conditional logic and data processing rules"
+                icon={GitBranch}
+              >
+                <FormField 
+                  label="Logic Type" 
+                  description="Select the type of logic operation"
+                  required
+                >
+                  <Select
+                    value={String(selectedNode.data.logicType || 'condition')}
+                    onValueChange={(value) => onUpdateNode(selectedNode.id, { logicType: value })}
+                  >
+                    <SelectTrigger className="h-9 text-sm bg-workspace-secondary/30 border-border/50 focus:border-primary/50">
+                      <SelectValue placeholder="Select logic type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="condition">If/Then Condition</SelectItem>
+                      <SelectItem value="switch">Switch/Case</SelectItem>
+                      <SelectItem value="loop">Loop/Iterate</SelectItem>
+                      <SelectItem value="filter">Data Filter</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormField>
+                
+                <FormField 
+                  label="Condition Expression" 
+                  description="Define the logic condition (e.g., input.value > 100)"
+                >
+                  <Textarea
+                    value={String(selectedNode.data.condition || '')}
+                    onChange={(e) => onUpdateNode(selectedNode.id, { condition: e.target.value })}
+                    className="min-h-[60px] text-sm resize-none bg-workspace-secondary/30 border-border/50 focus:border-primary/50"
+                    placeholder="input.value > 100 && input.status === 'active'"
+                  />
+                </FormField>
+                
+                <FormField 
+                  label="True Output Path" 
+                  description="Data transformation for true condition"
+                >
+                  <Input
+                    value={String(selectedNode.data.trueOutput || '')}
+                    onChange={(e) => onUpdateNode(selectedNode.id, { trueOutput: e.target.value })}
+                    className="h-9 text-sm bg-workspace-secondary/30 border-border/50 focus:border-primary/50"
+                    placeholder="Continue to next node"
+                  />
+                </FormField>
+                
+                <FormField 
+                  label="False Output Path" 
+                  description="Data transformation for false condition"
+                >
+                  <Input
+                    value={String(selectedNode.data.falseOutput || '')}
+                    onChange={(e) => onUpdateNode(selectedNode.id, { falseOutput: e.target.value })}
+                    className="h-9 text-sm bg-workspace-secondary/30 border-border/50 focus:border-primary/50"
+                    placeholder="Redirect to error handler"
+                  />
+                </FormField>
+              </PropertySection>
+
+              <Separator className="bg-border/30" />
+            </>
+          )}
+
+          {selectedNode.type === 'integration' && (
+            <>
+              <PropertySection 
+                id="integration-config" 
+                title="Integration Configuration" 
+                description="Configure external service connections and API settings"
+                icon={Globe}
+              >
+                <FormField 
+                  label="Service Type" 
+                  description="Select the external service to integrate with"
+                  required
+                >
+                  <Select
+                    value={String(selectedNode.data.serviceType || 'api')}
+                    onValueChange={(value) => onUpdateNode(selectedNode.id, { serviceType: value })}
+                  >
+                    <SelectTrigger className="h-9 text-sm bg-workspace-secondary/30 border-border/50 focus:border-primary/50">
+                      <SelectValue placeholder="Select service" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="api">REST API</SelectItem>
+                      <SelectItem value="webhook">Webhook</SelectItem>
+                      <SelectItem value="database">Database</SelectItem>
+                      <SelectItem value="file">File System</SelectItem>
+                      <SelectItem value="email">Email Service</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormField>
+                
+                <FormField 
+                  label="Endpoint URL" 
+                  description="The complete URL for the API endpoint"
+                  required
+                >
+                  <Input
+                    value={String(selectedNode.data.endpoint || '')}
+                    onChange={(e) => onUpdateNode(selectedNode.id, { endpoint: e.target.value })}
+                    className="h-9 text-sm bg-workspace-secondary/30 border-border/50 focus:border-primary/50"
+                    placeholder="https://api.example.com/v1/data"
+                  />
+                </FormField>
+                
+                <FormField 
+                  label="HTTP Method" 
+                  description="Select the HTTP method for API calls"
+                >
+                  <Select
+                    value={String(selectedNode.data.method || 'GET')}
+                    onValueChange={(value) => onUpdateNode(selectedNode.id, { method: value })}
+                  >
+                    <SelectTrigger className="h-9 text-sm bg-workspace-secondary/30 border-border/50 focus:border-primary/50">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="GET">GET</SelectItem>
+                      <SelectItem value="POST">POST</SelectItem>
+                      <SelectItem value="PUT">PUT</SelectItem>
+                      <SelectItem value="DELETE">DELETE</SelectItem>
+                      <SelectItem value="PATCH">PATCH</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormField>
+                
+                <FormField 
+                  label="Authentication" 
+                  description="API authentication configuration"
+                >
+                  <Textarea
+                    value={String(selectedNode.data.auth || '')}
+                    onChange={(e) => onUpdateNode(selectedNode.id, { auth: e.target.value })}
+                    className="min-h-[60px] text-sm resize-none bg-workspace-secondary/30 border-border/50 focus:border-primary/50"
+                    placeholder="Bearer token, API key, or other auth headers"
+                  />
+                </FormField>
+                
+                <FormField 
+                  label="Request Headers" 
+                  description="Additional headers to include in requests (JSON format)"
+                >
+                  <Textarea
+                    value={String(selectedNode.data.headers || '')}
+                    onChange={(e) => onUpdateNode(selectedNode.id, { headers: e.target.value })}
+                    className="min-h-[60px] text-sm resize-none bg-workspace-secondary/30 border-border/50 focus:border-primary/50"
+                    placeholder='{"Content-Type": "application/json", "X-Custom-Header": "value"}'
+                  />
+                </FormField>
+              </PropertySection>
+
+              <Separator className="bg-border/30" />
+            </>
+          )}
+
+          {selectedNode.type === 'utility' && (
+            <>
+              <PropertySection 
+                id="utility-config" 
+                title="Utility Configuration" 
+                description="Configure utility function parameters and behavior"
+                icon={Settings}
+              >
+                <FormField 
+                  label="Utility Type" 
+                  description="Select the type of utility operation"
+                  required
+                >
+                  <Select
+                    value={String(selectedNode.data.utilityType || 'delay')}
+                    onValueChange={(value) => onUpdateNode(selectedNode.id, { utilityType: value })}
+                  >
+                    <SelectTrigger className="h-9 text-sm bg-workspace-secondary/30 border-border/50 focus:border-primary/50">
+                      <SelectValue placeholder="Select utility" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="delay">Delay/Timer</SelectItem>
+                      <SelectItem value="formatter">Data Formatter</SelectItem>
+                      <SelectItem value="validator">Data Validator</SelectItem>
+                      <SelectItem value="logger">Logger</SelectItem>
+                      <SelectItem value="counter">Counter</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormField>
+                
+                <FormField 
+                  label="Configuration" 
+                  description="Utility-specific configuration parameters"
+                >
+                  <Textarea
+                    value={String(selectedNode.data.config || '')}
+                    onChange={(e) => onUpdateNode(selectedNode.id, { config: e.target.value })}
+                    className="min-h-[70px] text-sm resize-none bg-workspace-secondary/30 border-border/50 focus:border-primary/50"
+                    placeholder="Configuration parameters (JSON format or simple values)"
+                  />
+                </FormField>
+                
+                <FormField 
+                  label="Output Format" 
+                  description="Define how the output should be formatted"
+                >
+                  <Select
+                    value={String(selectedNode.data.outputFormat || 'json')}
+                    onValueChange={(value) => onUpdateNode(selectedNode.id, { outputFormat: value })}
+                  >
+                    <SelectTrigger className="h-9 text-sm bg-workspace-secondary/30 border-border/50 focus:border-primary/50">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="json">JSON</SelectItem>
+                      <SelectItem value="text">Plain Text</SelectItem>
+                      <SelectItem value="csv">CSV</SelectItem>
+                      <SelectItem value="xml">XML</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormField>
+                
+                <FormField 
+                  label="Error Handling" 
+                  description="Define how errors should be handled"
+                >
+                  <Select
+                    value={String(selectedNode.data.errorHandling || 'stop')}
+                    onValueChange={(value) => onUpdateNode(selectedNode.id, { errorHandling: value })}
+                  >
+                    <SelectTrigger className="h-9 text-sm bg-workspace-secondary/30 border-border/50 focus:border-primary/50">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="stop">Stop Execution</SelectItem>
+                      <SelectItem value="continue">Continue with Default</SelectItem>
+                      <SelectItem value="retry">Retry Operation</SelectItem>
+                      <SelectItem value="skip">Skip and Continue</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormField>
+              </PropertySection>
+
+              <Separator className="bg-border/30" />
+            </>
+          )}
+
+          {selectedNode.type === 'data' && (
+            <>
+              <PropertySection 
+                id="data-config" 
+                title="Data Source Configuration" 
+                description="Configure data source connection and query parameters"
+                icon={Database}
+              >
+                <FormField 
+                  label="Data Source Type" 
+                  description="Select the type of data source"
+                  required
+                >
+                  <Select
+                    value={String(selectedNode.data.sourceType || 'database')}
+                    onValueChange={(value) => onUpdateNode(selectedNode.id, { sourceType: value })}
+                  >
+                    <SelectTrigger className="h-9 text-sm bg-workspace-secondary/30 border-border/50 focus:border-primary/50">
+                      <SelectValue placeholder="Select data source" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="database">Database</SelectItem>
+                      <SelectItem value="file">File (CSV/JSON)</SelectItem>
+                      <SelectItem value="api">API Endpoint</SelectItem>
+                      <SelectItem value="memory">In-Memory Data</SelectItem>
+                      <SelectItem value="stream">Data Stream</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormField>
+                
+                <FormField 
+                  label="Connection String" 
+                  description="Database connection string or file path"
+                  required
+                >
+                  <Input
+                    value={String(selectedNode.data.connectionString || '')}
+                    onChange={(e) => onUpdateNode(selectedNode.id, { connectionString: e.target.value })}
+                    className="h-9 text-sm bg-workspace-secondary/30 border-border/50 focus:border-primary/50"
+                    placeholder="postgresql://user:pass@host:port/db or /path/to/file.csv"
+                  />
+                </FormField>
+                
+                <FormField 
+                  label="Query/Filter" 
+                  description="SQL query or data filter expression"
+                >
+                  <Textarea
+                    value={String(selectedNode.data.query || '')}
+                    onChange={(e) => onUpdateNode(selectedNode.id, { query: e.target.value })}
+                    className="min-h-[70px] text-sm resize-none bg-workspace-secondary/30 border-border/50 focus:border-primary/50"
+                    placeholder="SELECT * FROM users WHERE active = true"
+                  />
+                </FormField>
+                
+                <FormField 
+                  label="Batch Size" 
+                  description="Number of records to process at once"
+                >
+                  <Input
+                    type="number"
+                    min="1"
+                    max="10000"
+                    value={Number(selectedNode.data.batchSize || 100)}
+                    onChange={(e) => onUpdateNode(selectedNode.id, { batchSize: parseInt(e.target.value) })}
+                    className="h-9 text-sm bg-workspace-secondary/30 border-border/50 focus:border-primary/50"
+                  />
+                </FormField>
+                
+                <FormField 
+                  label="Cache Duration" 
+                  description="How long to cache results (in minutes)"
+                >
+                  <Input
+                    type="number"
+                    min="0"
+                    max="1440"
+                    value={Number(selectedNode.data.cacheDuration || 0)}
+                    onChange={(e) => onUpdateNode(selectedNode.id, { cacheDuration: parseInt(e.target.value) })}
+                    className="h-9 text-sm bg-workspace-secondary/30 border-border/50 focus:border-primary/50"
+                    placeholder="0 = no cache"
                   />
                 </FormField>
               </PropertySection>

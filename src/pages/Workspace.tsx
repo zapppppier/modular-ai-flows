@@ -159,12 +159,22 @@ const Workspace = () => {
     setLogs(prev => [...prev, '[INFO] Workflow saved']);
   }, []);
 
+  const onClearWorkspace = useCallback(() => {
+    if (window.confirm('Are you sure you want to clear the entire workspace? This cannot be undone.')) {
+      setNodes([]);
+      setEdges([]);
+      setSelectedNode(null);
+      setLogs(['[INFO] Workspace cleared', '[INFO] Ready to build AI workflows']);
+    }
+  }, [setNodes, setEdges]);
+
   return (
     <div className="h-screen flex flex-col bg-workspace">
       {/* Fixed Toolbar */}
       <WorkspaceToolbar 
         onRun={onRunWorkflow}
         onSave={onSaveWorkflow}
+        onClear={onClearWorkspace}
         isRunning={isRunning}
       />
       
