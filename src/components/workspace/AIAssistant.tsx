@@ -305,17 +305,6 @@ export function AIAssistant({ onGenerateWorkflow }: AIAssistantProps) {
 
   return (
     <div className="h-full flex flex-col bg-workspace border-r border-border/50">
-      {/* Compact Header */}
-      <div className="px-4 py-3 border-b border-border/50">
-        <div className="flex items-center gap-2">
-          <div className="flex items-center justify-center w-7 h-7 bg-gradient-to-br from-primary to-primary/70 rounded-lg">
-            <Bot className="h-4 w-4 text-primary-foreground" />
-          </div>
-          <h2 className="text-sm font-semibold text-foreground">
-            AI Assistant
-          </h2>
-        </div>
-      </div>
       
       {/* Quick Action Buttons */}
       <div className="px-4 py-2 space-y-1">
