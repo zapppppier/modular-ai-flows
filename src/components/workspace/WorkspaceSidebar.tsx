@@ -534,13 +534,14 @@ export const WorkspaceSidebar = ({ onAddNode }: WorkspaceSidebarProps) => {
                                 boxShadow: `0 2px 8px ${template.color}20`
                               }}
                             >
-                              {template.logo ? (
-                                <img 
-                                  src={template.logo} 
-                                  alt={`${template.label} logo`}
-                                  className="w-5 h-5 object-contain"
-                                />
-                              ) : (
+                               {template.logo ? (
+                                 <img 
+                                   src={template.logo} 
+                                   alt={`${template.label} logo`}
+                                   className="w-5 h-5 object-contain"
+                                   key={template.id}
+                                 />
+                               ) : (
                                 IconComponent && <IconComponent className="w-4 h-4" />
                               )}
                             </div>
