@@ -46,11 +46,6 @@ export function AIAssistant({ onGenerateWorkflow }: AIAssistantProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
-  const quickActions = [
-    { label: "Email to Slack", prompt: "Send a Slack message when I receive an email from my boss", icon: Zap },
-    { label: "Sheets to DB", prompt: "Save new Google Sheets rows to a database", icon: Lightbulb },
-    { label: "File Processing", prompt: "Process uploaded files and store their metadata", icon: Sparkles },
-  ];
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -306,27 +301,6 @@ export function AIAssistant({ onGenerateWorkflow }: AIAssistantProps) {
   return (
     <div className="h-full flex flex-col bg-workspace border-r border-border/50">
       
-      {/* Quick Action Buttons */}
-      <div className="px-4 py-2 space-y-1">
-        {quickActions.map((action, index) => (
-          <Button
-            key={index}
-            variant="ghost"
-            size="sm"
-            className="w-full justify-start h-auto py-2 px-3 text-left hover:bg-accent/50 transition-all duration-200"
-            onClick={() => {
-              setInput(action.prompt);
-              handleSendMessage();
-            }}
-          >
-            <action.icon className="h-3 w-3 mr-2 text-primary/70 shrink-0" />
-            <span className="text-xs font-medium">{action.label}</span>
-          </Button>
-        ))}
-      </div>
-
-      <Separator />
-      
       {/* Chat Messages */}
       <ScrollArea className="flex-1 px-3 py-3">
         <div className="space-y-4">
@@ -336,11 +310,6 @@ export function AIAssistant({ onGenerateWorkflow }: AIAssistantProps) {
               className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
             >
               <div className="flex items-start gap-3 max-w-[85%]">
-                {message.role === 'assistant' && (
-                  <div className="flex items-center justify-center w-7 h-7 bg-gradient-to-br from-primary to-primary/70 rounded-lg shrink-0 mt-1">
-                    <Bot className="h-3.5 w-3.5 text-primary-foreground" />
-                  </div>
-                )}
                 <div
                   className={`rounded-2xl px-4 py-3 ${
                     message.role === 'user'
@@ -364,9 +333,6 @@ export function AIAssistant({ onGenerateWorkflow }: AIAssistantProps) {
           {isLoading && (
             <div className="flex justify-start">
               <div className="flex items-start gap-3">
-                <div className="flex items-center justify-center w-7 h-7 bg-gradient-to-br from-primary to-primary/70 rounded-lg">
-                  <Bot className="h-3.5 w-3.5 text-primary-foreground" />
-                </div>
                 <div className="bg-accent/50 rounded-2xl px-4 py-3">
                   <div className="flex items-center gap-1">
                     <div className="w-2 h-2 bg-primary/60 rounded-full animate-pulse"></div>
