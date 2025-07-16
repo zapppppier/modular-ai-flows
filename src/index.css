@@ -6,101 +6,111 @@
 
 @layer base {
   :root {
-    /* Dark theme as default for developer experience */
-    --background: 220 13% 9%;
-    --foreground: 220 13% 95%;
+    /* Enhanced color system with better contrast */
+    --background: 218 15% 6%;
+    --foreground: 218 15% 98%;
     
-    /* Workspace colors */
-    --workspace: 220 13% 8%;
-    --workspace-secondary: 220 13% 12%;
-    --workspace-accent: 220 13% 15%;
+    /* Workspace colors - deeper, richer tones */
+    --workspace: 218 15% 5%;
+    --workspace-secondary: 218 15% 8%;
+    --workspace-accent: 218 15% 12%;
 
-    --card: 220 13% 12%;
-    --card-foreground: 220 13% 95%;
+    --card: 218 15% 9%;
+    --card-foreground: 218 15% 96%;
 
-    --popover: 220 13% 12%;
-    --popover-foreground: 220 13% 95%;
+    --popover: 218 15% 9%;
+    --popover-foreground: 218 15% 96%;
 
-    --primary: 217 91% 60%;
-    --primary-foreground: 220 13% 9%;
+    /* Enhanced primary with better saturation */
+    --primary: 217 91% 65%;
+    --primary-foreground: 218 15% 6%;
 
-    --secondary: 220 13% 15%;
-    --secondary-foreground: 220 13% 95%;
+    /* Improved secondary contrast */
+    --secondary: 218 15% 12%;
+    --secondary-foreground: 218 15% 96%;
 
-    --muted: 220 13% 15%;
-    --muted-foreground: 220 9% 55%;
+    /* Better muted colors for subtle elements */
+    --muted: 218 15% 12%;
+    --muted-foreground: 218 12% 65%;
 
-    --accent: 220 13% 15%;
-    --accent-foreground: 220 13% 95%;
+    --accent: 218 15% 14%;
+    --accent-foreground: 218 15% 96%;
 
-    --destructive: 0 63% 50%;
-    --destructive-foreground: 220 13% 95%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 218 15% 96%;
 
-    --border: 220 13% 20%;
-    --input: 220 13% 15%;
-    --ring: 217 91% 60%;
+    /* Enhanced borders with more definition */
+    --border: 218 15% 18%;
+    --input: 218 15% 12%;
+    --ring: 217 91% 65%;
 
     --radius: 0.75rem;
     
-    /* AI Model brand colors */
-    --openai: 120 100% 35%;
-    --claude: 25 95% 53%;
-    --gemini: 228 90% 60%;
-    --grok: 280 100% 70%;
-    --deepseek: 195 100% 50%;
+    /* AI Model brand colors - enhanced saturation */
+    --openai: 120 85% 40%;
+    --claude: 25 95% 58%;
+    --gemini: 228 90% 65%;
+    --grok: 280 100% 75%;
+    --deepseek: 195 85% 55%;
     
-    /* Node type colors */
-    --node-text: 120 60% 50%;
-    --node-image: 280 60% 50%;
-    --node-code: 200 60% 50%;
-    --node-data: 25 60% 50%;
-    --node-logic: 330 60% 50%;
-    --node-integration: 180 60% 50%;
-    --node-utility: 60 60% 50%;
-    --node-communication: 240 60% 50%;
+    /* Node type colors - more vibrant */
+    --node-text: 120 70% 55%;
+    --node-image: 280 70% 60%;
+    --node-code: 200 70% 60%;
+    --node-data: 25 70% 60%;
+    --node-logic: 330 70% 60%;
+    --node-integration: 180 70% 55%;
+    --node-utility: 60 70% 55%;
+    --node-communication: 240 70% 60%;
     
-    /* Workspace specific */
-    --node-shadow: 220 25% 4%;
-    --connection-primary: 217 91% 60%;
-    --connection-success: 120 60% 50%;
-    --connection-error: 0 63% 50%;
+    /* Enhanced workspace specific colors */
+    --node-shadow: 218 25% 2%;
+    --connection-primary: 217 91% 65%;
+    --connection-success: 120 70% 55%;
+    --connection-error: 0 72% 51%;
     
-    /* Enhanced Gradients */
+    /* Enhanced Gradients with more depth */
     --gradient-workspace: linear-gradient(135deg, hsl(var(--workspace)), hsl(var(--workspace-secondary)));
     --gradient-node: linear-gradient(135deg, hsl(var(--card)), hsl(var(--workspace-accent)));
-    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(217 91% 45%));
-    --gradient-aurora: linear-gradient(135deg, hsl(217 91% 60% / 0.1), hsl(280 100% 70% / 0.1), hsl(120 60% 50% / 0.1));
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(217 91% 50%));
+    --gradient-aurora: linear-gradient(135deg, hsl(217 91% 65% / 0.08), hsl(280 100% 75% / 0.08), hsl(120 70% 55% / 0.08));
     --gradient-glow: radial-gradient(circle at center, hsl(var(--primary) / 0.4), transparent 70%);
-    --gradient-mesh: conic-gradient(from 90deg at 50% 50%, hsl(217 91% 60% / 0.1), hsl(280 100% 70% / 0.1), hsl(120 60% 50% / 0.1), hsl(217 91% 60% / 0.1));
+    --gradient-mesh: conic-gradient(from 90deg at 50% 50%, hsl(217 91% 65% / 0.08), hsl(280 100% 75% / 0.08), hsl(120 70% 55% / 0.08), hsl(217 91% 65% / 0.08));
 
-    /* Glassmorphism */
-    --glass-bg: hsl(var(--card) / 0.8);
-    --glass-border: hsl(var(--border) / 0.3);
-    --glass-shadow: 0 8px 32px hsl(var(--node-shadow) / 0.2);
+    /* Premium glassmorphism */
+    --glass-bg: hsl(var(--card) / 0.85);
+    --glass-border: hsl(var(--border) / 0.4);
+    --glass-shadow: 0 8px 32px hsl(var(--node-shadow) / 0.25);
 
-    /* Sidebar for AI platform */
-    --sidebar-background: 220 13% 10%;
-    --sidebar-foreground: 220 13% 85%;
-    --sidebar-primary: 217 91% 60%;
-    --sidebar-primary-foreground: 220 13% 9%;
-    --sidebar-accent: 220 13% 15%;
-    --sidebar-accent-foreground: 220 13% 95%;
-    --sidebar-border: 220 13% 20%;
-    --sidebar-ring: 217 91% 60%;
+    /* Enhanced sidebar for premium feel */
+    --sidebar-background: 218 15% 7%;
+    --sidebar-foreground: 218 15% 92%;
+    --sidebar-primary: 217 91% 65%;
+    --sidebar-primary-foreground: 218 15% 6%;
+    --sidebar-accent: 218 15% 12%;
+    --sidebar-accent-foreground: 218 15% 96%;
+    --sidebar-border: 218 15% 18%;
+    --sidebar-ring: 217 91% 65%;
     
-    /* Enhanced Animations & Transitions */
+    /* Premium animations & transitions */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-bouncy: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
     --transition-elastic: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     
-    /* Enhanced Shadows */
-    --shadow-node: 0 4px 12px hsl(var(--node-shadow) / 0.4);
-    --shadow-panel: 0 8px 25px hsl(var(--node-shadow) / 0.3);
+    /* Enhanced shadow system */
+    --shadow-xs: 0 1px 2px hsl(var(--node-shadow) / 0.1);
+    --shadow-sm: 0 1px 3px hsl(var(--node-shadow) / 0.12), 0 1px 2px hsl(var(--node-shadow) / 0.08);
+    --shadow-md: 0 4px 6px hsl(var(--node-shadow) / 0.1), 0 2px 4px hsl(var(--node-shadow) / 0.06);
+    --shadow-lg: 0 10px 15px hsl(var(--node-shadow) / 0.1), 0 4px 6px hsl(var(--node-shadow) / 0.05);
+    --shadow-xl: 0 20px 25px hsl(var(--node-shadow) / 0.1), 0 10px 10px hsl(var(--node-shadow) / 0.04);
+    --shadow-2xl: 0 25px 50px hsl(var(--node-shadow) / 0.15);
+    --shadow-node: var(--shadow-lg);
+    --shadow-panel: var(--shadow-xl);
     --shadow-glow: 0 0 20px hsl(var(--primary) / 0.3);
-    --shadow-elevation-1: 0 2px 8px hsl(var(--node-shadow) / 0.15);
-    --shadow-elevation-2: 0 4px 16px hsl(var(--node-shadow) / 0.2);
-    --shadow-elevation-3: 0 8px 32px hsl(var(--node-shadow) / 0.25);
+    --shadow-elevation-1: var(--shadow-sm);
+    --shadow-elevation-2: var(--shadow-md);
+    --shadow-elevation-3: var(--shadow-lg);
     --shadow-soft: 0 2px 20px hsl(var(--primary) / 0.1);
     --shadow-intense: 0 0 40px hsl(var(--primary) / 0.4);
   }
@@ -112,8 +122,11 @@
   }
 
   body {
-    @apply bg-background text-foreground font-mono;
-    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    @apply bg-background text-foreground;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   /* Custom scrollbars for dark theme */

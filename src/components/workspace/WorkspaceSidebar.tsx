@@ -28,12 +28,16 @@ import {
   Calendar,
   Filter,
   Calculator,
-  Workflow
+  Workflow,
+  Bot,
+  Settings,
+  Share
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { Separator } from '@/components/ui/separator';
 
 // Import brand logos
 import openaiLogo from '@/assets/logos/openai-logo.png';
@@ -67,6 +71,19 @@ interface NodeTemplate {
   model?: string;
   color: string;
 }
+
+// Category icons for better visual hierarchy
+const categoryIcons = {
+  'AI Models': Bot,
+  'Processing': Settings,
+  'Integrations': Share,
+  'Communication': MessageCircle,
+  'Data Sources': Database,
+  'File & Storage': FolderOpen,
+  'Marketing': Target,
+  'Utilities': Zap,
+  'Logic': GitBranch,
+};
 
 const nodeTemplates: { [key: string]: NodeTemplate[] } = {
   'AI Models': [
@@ -418,91 +435,137 @@ export const WorkspaceSidebar = ({ onAddNode }: WorkspaceSidebarProps) => {
   }, {} as typeof nodeTemplates);
 
   return (
-    <div className="workspace-sidebar flex flex-col h-full">
-      <div className="p-4 border-b border-border">
-        <h2 className="text-sm font-semibold mb-3 text-foreground">Node Library</h2>
+    <div className="workspace-sidebar flex flex-col h-full relative">
+      {/* Header */}
+      <div className="p-6 border-b border-border/50 relative z-10">
+        <h2 className="text-lg font-semibold mb-4 text-foreground tracking-tight">
+          Node Library
+        </h2>
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
           <Input
             placeholder="Search nodes..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-9 h-8 text-sm"
+            className="pl-10 h-9 text-sm bg-workspace-secondary/50 border-border/50 focus:border-primary/50 transition-all duration-200"
           />
         </div>
       </div>
       
       <ScrollArea className="flex-1">
-        <div className="p-2">
-          {Object.entries(filteredTemplates).map(([section, templates]) => (
-            <Collapsible
-              key={section}
-              open={openSections.includes(section)}
-              onOpenChange={() => toggleSection(section)}
-              className="mb-2"
-            >
-              <CollapsibleTrigger asChild>
-                <Button
-                  variant="ghost"
-                  className="w-full justify-between p-2 h-auto text-sm font-medium"
+        <div className="p-3 space-y-1 relative z-10">
+          {Object.entries(filteredTemplates).map(([section, templates]) => {
+            const CategoryIcon = categoryIcons[section as keyof typeof categoryIcons];
+            const isOpen = openSections.includes(section);
+            
+            return (
+              <div key={section} className="group">
+                <Collapsible
+                  open={isOpen}
+                  onOpenChange={() => toggleSection(section)}
                 >
-                  {section}
-                  {openSections.includes(section) ? (
-                    <ChevronDown className="w-4 h-4" />
-                  ) : (
-                    <ChevronRight className="w-4 h-4" />
-                  )}
-                </Button>
-              </CollapsibleTrigger>
-              
-              <CollapsibleContent className="space-y-1 pl-2">
-                {templates.map((template) => {
-                  const IconComponent = template.icon;
-                  return (
-                    <div
-                      key={template.id}
-                      className="group p-3 rounded-lg border border-border bg-card hover:bg-accent cursor-grab active:cursor-grabbing transition-colors"
-                      draggable
-                      onDragStart={(e) => {
-                        e.dataTransfer.setData('application/reactflow', JSON.stringify(template));
-                        e.dataTransfer.effectAllowed = 'move';
-                      }}
-                      onClick={() => onAddNode(template)}
+                  <CollapsibleTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      className={`
+                        w-full justify-between px-3 py-2.5 h-auto text-sm font-medium 
+                        transition-all duration-200 group-hover:bg-accent/50
+                        ${isOpen ? 'bg-accent/30 text-accent-foreground' : 'text-muted-foreground hover:text-foreground'}
+                      `}
                     >
-                      <div className="flex items-start gap-3">
-                        <div 
-                          className="w-8 h-8 rounded-md flex items-center justify-center flex-shrink-0"
-                          style={{ 
-                            backgroundColor: template.logo ? 'transparent' : `${template.color}20`, 
-                            color: template.color,
-                            border: template.logo ? 'none' : `1px solid ${template.color}40`
-                          }}
-                        >
-                          {template.logo ? (
-                            <img 
-                              src={template.logo} 
-                              alt={`${template.label} logo`}
-                              className="w-6 h-6 object-contain"
-                            />
-                          ) : (
-                            IconComponent && <IconComponent className="w-4 h-4" />
-                          )}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <h4 className="text-sm font-medium text-foreground group-hover:text-accent-foreground">
-                            {template.label}
-                          </h4>
-                          <p className="text-xs text-muted-foreground mt-1 leading-tight">
-                            {template.description}
-                          </p>
-                        </div>
+                      <div className="flex items-center gap-2.5">
+                        {CategoryIcon && (
+                          <CategoryIcon className="w-4 h-4 text-primary/70" />
+                        )}
+                        <span className="tracking-tight">{section}</span>
+                        <span className="text-xs text-muted-foreground/60 font-normal">
+                          {templates.length}
+                        </span>
                       </div>
-                    </div>
-                  );
-                })}
-              </CollapsibleContent>
-            </Collapsible>
-          ))}
+                      {isOpen ? (
+                        <ChevronDown className="w-4 h-4 transition-transform duration-200" />
+                      ) : (
+                        <ChevronRight className="w-4 h-4 transition-transform duration-200" />
+                      )}
+                    </Button>
+                  </CollapsibleTrigger>
+                  
+                  <CollapsibleContent className="space-y-1.5 pt-1 pb-2">
+                    {templates.map((template, index) => {
+                      const IconComponent = template.icon;
+                      return (
+                        <div
+                          key={template.id}
+                          className={`
+                            group/item relative backdrop-blur-sm border border-border/40 rounded-xl p-3 
+                            cursor-grab active:cursor-grabbing transition-all duration-200 ml-2
+                            hover:border-primary/30 hover:bg-card/60 hover:shadow-md hover:-translate-y-0.5
+                            animate-fade-in
+                          `}
+                          style={{
+                            animationDelay: `${index * 50}ms`,
+                            background: 'var(--glass-bg)',
+                          }}
+                          draggable
+                          onDragStart={(e) => {
+                            e.dataTransfer.setData('application/reactflow', JSON.stringify(template));
+                            e.dataTransfer.effectAllowed = 'move';
+                          }}
+                          onClick={() => onAddNode(template)}
+                        >
+                          {/* Subtle glow effect */}
+                          <div 
+                            className="absolute inset-0 rounded-xl opacity-0 group-hover/item:opacity-20 transition-opacity duration-300"
+                            style={{
+                              background: `radial-gradient(circle at 50% 50%, ${template.color}, transparent 70%)`
+                            }}
+                          />
+                          
+                          <div className="flex items-start gap-3 relative z-10">
+                            <div 
+                              className={`
+                                w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 
+                                group-hover/item:scale-110 transition-all duration-200
+                              `}
+                              style={{ 
+                                backgroundColor: template.logo ? 'hsl(var(--card))' : `${template.color}15`, 
+                                color: template.color,
+                                border: `1px solid ${template.color}30`,
+                                boxShadow: `0 2px 8px ${template.color}20`
+                              }}
+                            >
+                              {template.logo ? (
+                                <img 
+                                  src={template.logo} 
+                                  alt={`${template.label} logo`}
+                                  className="w-5 h-5 object-contain"
+                                />
+                              ) : (
+                                IconComponent && <IconComponent className="w-4 h-4" />
+                              )}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <h4 className="text-sm font-medium text-foreground group-hover/item:text-primary transition-colors duration-200 tracking-tight">
+                                {template.label}
+                              </h4>
+                              <p className="text-xs text-muted-foreground mt-1 leading-relaxed tracking-wide">
+                                {template.description}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </CollapsibleContent>
+                </Collapsible>
+                
+                {/* Separator between categories */}
+                {section !== Object.keys(filteredTemplates)[Object.keys(filteredTemplates).length - 1] && (
+                  <Separator className="my-2 bg-border/30" />
+                )}
+              </div>
+            );
+          })}
         </div>
       </ScrollArea>
     </div>
