@@ -305,49 +305,41 @@ export function AIAssistant({ onGenerateWorkflow }: AIAssistantProps) {
 
   return (
     <div className="h-full flex flex-col bg-workspace border-r border-border/50">
-      {/* Header */}
-      <div className="p-6 border-b border-border/50">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-primary to-primary/70 rounded-xl">
-            <Bot className="h-5 w-5 text-primary-foreground" />
+      {/* Compact Header */}
+      <div className="px-4 py-3 border-b border-border/50">
+        <div className="flex items-center gap-2">
+          <div className="flex items-center justify-center w-7 h-7 bg-gradient-to-br from-primary to-primary/70 rounded-lg">
+            <Bot className="h-4 w-4 text-primary-foreground" />
           </div>
-          <div>
-            <h2 className="text-lg font-semibold text-foreground tracking-tight">
-              AI Assistant
-            </h2>
-            <p className="text-sm text-muted-foreground">
-              Describe workflows, I'll build them
-            </p>
-          </div>
-        </div>
-
-        {/* Quick Action Buttons */}
-        <div className="space-y-2">
-          {quickActions.map((action, index) => (
-            <Button
-              key={index}
-              variant="ghost"
-              size="sm"
-              className="w-full justify-start h-auto p-3 text-left hover:bg-accent/50 transition-all duration-200"
-              onClick={() => {
-                setInput(action.prompt);
-                handleSendMessage();
-              }}
-            >
-              <action.icon className="h-4 w-4 mr-3 text-primary/70 shrink-0" />
-              <div className="flex flex-col items-start">
-                <span className="text-sm font-medium">{action.label}</span>
-                <span className="text-xs text-muted-foreground line-clamp-1">
-                  {action.prompt}
-                </span>
-              </div>
-            </Button>
-          ))}
+          <h2 className="text-sm font-semibold text-foreground">
+            AI Assistant
+          </h2>
         </div>
       </div>
       
+      {/* Quick Action Buttons */}
+      <div className="px-4 py-2 space-y-1">
+        {quickActions.map((action, index) => (
+          <Button
+            key={index}
+            variant="ghost"
+            size="sm"
+            className="w-full justify-start h-auto py-2 px-3 text-left hover:bg-accent/50 transition-all duration-200"
+            onClick={() => {
+              setInput(action.prompt);
+              handleSendMessage();
+            }}
+          >
+            <action.icon className="h-3 w-3 mr-2 text-primary/70 shrink-0" />
+            <span className="text-xs font-medium">{action.label}</span>
+          </Button>
+        ))}
+      </div>
+
+      <Separator />
+      
       {/* Chat Messages */}
-      <ScrollArea className="flex-1 px-4 py-4">
+      <ScrollArea className="flex-1 px-3 py-3">
         <div className="space-y-4">
           {messages.map((message) => (
             <div
@@ -401,21 +393,21 @@ export function AIAssistant({ onGenerateWorkflow }: AIAssistantProps) {
       </ScrollArea>
 
       {/* Input Area */}
-      <div className="p-4 border-t border-border/50 bg-workspace">
-        <div className="flex gap-2 mb-3">
+      <div className="p-3 border-t border-border/50 bg-workspace">
+        <div className="flex gap-2 mb-2">
           <Input
             placeholder="Describe the automation you want to build..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={handleKeyPress}
             disabled={isLoading}
-            className="flex-1 h-12 px-4 text-sm bg-background border-border/50 focus:border-primary/50 transition-all duration-200"
+            className="flex-1 h-10 px-3 text-sm bg-background border-border/50 focus:border-primary/50 transition-all duration-200"
           />
           <Button
             onClick={handleSendMessage}
             disabled={isLoading || !input.trim()}
             size="icon"
-            className="h-12 w-12 shrink-0"
+            className="h-10 w-10 shrink-0"
           >
             <Send className="h-4 w-4" />
           </Button>

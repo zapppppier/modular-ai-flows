@@ -16,7 +16,7 @@ const Index = () => {
               <div className="absolute inset-0 animate-pulse bg-primary/20 rounded-full blur-xl"></div>
             </div>
             <h1 className="text-5xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-              AI Flow Builder
+              WorkA
             </h1>
           </div>
           
