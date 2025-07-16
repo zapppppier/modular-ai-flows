@@ -65,10 +65,18 @@
     --connection-success: 120 60% 50%;
     --connection-error: 0 63% 50%;
     
-    /* Gradients */
+    /* Enhanced Gradients */
     --gradient-workspace: linear-gradient(135deg, hsl(var(--workspace)), hsl(var(--workspace-secondary)));
     --gradient-node: linear-gradient(135deg, hsl(var(--card)), hsl(var(--workspace-accent)));
     --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(217 91% 45%));
+    --gradient-aurora: linear-gradient(135deg, hsl(217 91% 60% / 0.1), hsl(280 100% 70% / 0.1), hsl(120 60% 50% / 0.1));
+    --gradient-glow: radial-gradient(circle at center, hsl(var(--primary) / 0.4), transparent 70%);
+    --gradient-mesh: conic-gradient(from 90deg at 50% 50%, hsl(217 91% 60% / 0.1), hsl(280 100% 70% / 0.1), hsl(120 60% 50% / 0.1), hsl(217 91% 60% / 0.1));
+
+    /* Glassmorphism */
+    --glass-bg: hsl(var(--card) / 0.8);
+    --glass-border: hsl(var(--border) / 0.3);
+    --glass-shadow: 0 8px 32px hsl(var(--node-shadow) / 0.2);
 
     /* Sidebar for AI platform */
     --sidebar-background: 220 13% 10%;
@@ -80,14 +88,21 @@
     --sidebar-border: 220 13% 20%;
     --sidebar-ring: 217 91% 60%;
     
-    /* Animations & Transitions */
+    /* Enhanced Animations & Transitions */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bouncy: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --transition-elastic: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     
-    /* Shadows */
+    /* Enhanced Shadows */
     --shadow-node: 0 4px 12px hsl(var(--node-shadow) / 0.4);
     --shadow-panel: 0 8px 25px hsl(var(--node-shadow) / 0.3);
     --shadow-glow: 0 0 20px hsl(var(--primary) / 0.3);
+    --shadow-elevation-1: 0 2px 8px hsl(var(--node-shadow) / 0.15);
+    --shadow-elevation-2: 0 4px 16px hsl(var(--node-shadow) / 0.2);
+    --shadow-elevation-3: 0 8px 32px hsl(var(--node-shadow) / 0.25);
+    --shadow-soft: 0 2px 20px hsl(var(--primary) / 0.1);
+    --shadow-intense: 0 0 40px hsl(var(--primary) / 0.4);
   }
 }
 
@@ -121,60 +136,122 @@
   }
 }
 
-/* React Flow custom styles */
+/* Enhanced React Flow custom styles */
 .react-flow {
-  background: var(--gradient-workspace);
+  background: var(--gradient-mesh), var(--gradient-workspace);
+  position: relative;
+}
+
+.react-flow::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--gradient-aurora);
+  opacity: 0.3;
+  pointer-events: none;
+  animation: pulse-glow 4s ease-in-out infinite;
 }
 
 .react-flow__node {
-  background: var(--gradient-node);
-  border: 1px solid hsl(var(--border));
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px) saturate(180%);
+  border: 1px solid var(--glass-border);
   border-radius: var(--radius);
-  box-shadow: var(--shadow-node);
+  box-shadow: var(--glass-shadow);
   color: hsl(var(--foreground));
   font-family: inherit;
+  transition: var(--transition-smooth);
+  position: relative;
+  overflow: hidden;
+}
+
+.react-flow__node::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, hsl(var(--primary) / 0.1), transparent);
+  transition: var(--transition-fast);
+  opacity: 0;
+}
+
+.react-flow__node:hover::before {
+  animation: shimmer 1.5s ease-out;
+  opacity: 1;
+}
+
+.react-flow__node:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-elevation-2);
+  border-color: hsl(var(--primary) / 0.4);
 }
 
 .react-flow__node.selected {
-  box-shadow: var(--shadow-glow);
+  box-shadow: var(--shadow-intense);
   border-color: hsl(var(--primary));
+  transform: translateY(-2px);
 }
 
 .react-flow__edge-path {
   stroke: hsl(var(--connection-primary));
   stroke-width: 2;
+  filter: drop-shadow(0 0 6px hsl(var(--connection-primary) / 0.3));
+  transition: var(--transition-fast);
+}
+
+.react-flow__edge:hover .react-flow__edge-path {
+  stroke-width: 3;
+  filter: drop-shadow(0 0 12px hsl(var(--connection-primary) / 0.6));
 }
 
 .react-flow__edge.selected .react-flow__edge-path {
   stroke: hsl(var(--primary));
   stroke-width: 3;
+  filter: drop-shadow(0 0 12px hsl(var(--primary) / 0.8));
 }
 
 .react-flow__handle {
   background: hsl(var(--primary));
   border: 2px solid hsl(var(--workspace));
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
+  transition: var(--transition-fast);
+  box-shadow: 0 0 0 0 hsl(var(--primary) / 0.4);
+}
+
+.react-flow__handle:hover {
+  transform: scale(1.2);
+  box-shadow: 0 0 0 4px hsl(var(--primary) / 0.2);
 }
 
 .react-flow__handle.connectingfrom {
   background: hsl(var(--connection-success));
+  animation: pulse-glow 1s ease-in-out infinite;
 }
 
 .react-flow__minimap {
-  background: hsl(var(--workspace-secondary));
-  border: 1px solid hsl(var(--border));
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px) saturate(180%);
+  border: 1px solid var(--glass-border);
   border-radius: var(--radius);
+  box-shadow: var(--shadow-elevation-1);
 }
 
 .react-flow__controls {
-  background: hsl(var(--workspace-secondary));
-  border: 1px solid hsl(var(--border));
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px) saturate(180%);
+  border: 1px solid var(--glass-border);
   border-radius: var(--radius);
+  box-shadow: var(--shadow-elevation-1);
 }
 
 .react-flow__controls button {
-  background: hsl(var(--card));
+  background: hsl(var(--card) / 0.8);
   border-bottom: 1px solid hsl(var(--border));
   color: hsl(var(--foreground));
   transition: var(--transition-fast);
@@ -182,28 +259,78 @@
 
 .react-flow__controls button:hover {
   background: hsl(var(--accent));
+  transform: scale(1.05);
 }
 
-/* Workspace layout utilities - Using Flexbox with Resizable Panels */
+/* Enhanced Workspace layout utilities */
 .workspace-sidebar {
-  background: hsl(var(--sidebar-background));
-  border-right: 1px solid hsl(var(--border));
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px) saturate(180%);
+  border-right: 1px solid var(--glass-border);
   height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.workspace-sidebar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--gradient-glow);
+  opacity: 0.1;
+  pointer-events: none;
 }
 
 .workspace-properties {
-  background: hsl(var(--sidebar-background));
-  border-left: 1px solid hsl(var(--border));
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px) saturate(180%);
+  border-left: 1px solid var(--glass-border);
   height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.workspace-properties::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--gradient-glow);
+  opacity: 0.1;
+  pointer-events: none;
 }
 
 .workspace-toolbar {
-  background: hsl(var(--workspace-secondary));
-  border-bottom: 1px solid hsl(var(--border));
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px) saturate(180%);
+  border-bottom: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-elevation-1);
+  position: relative;
+  z-index: 10;
 }
 
 .workspace-logs {
-  background: hsl(var(--workspace));
-  border-top: 1px solid hsl(var(--border));
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px) saturate(180%);
+  border-top: 1px solid var(--glass-border);
   height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.workspace-logs::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--gradient-glow);
+  opacity: 0.05;
+  pointer-events: none;
 }
