@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Node } from '@xyflow/react';
-import { Settings, TestTube, Play, Info, ChevronDown, ChevronRight, Zap } from 'lucide-react';
+import { Settings, TestTube, Play, Info, ChevronDown, ChevronRight, Zap, Key, Wifi, WifiOff, DollarSign, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -10,6 +10,8 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { useOpenAI } from '@/hooks/useOpenAI';
+import { useToast } from '@/hooks/use-toast';
 
 interface WorkspacePropertiesProps {
   selectedNode: Node | null;
@@ -19,8 +21,48 @@ interface WorkspacePropertiesProps {
 export const WorkspaceProperties = ({ selectedNode, onUpdateNode }: WorkspacePropertiesProps) => {
   const [testInput, setTestInput] = useState('');
   const [testOutput, setTestOutput] = useState('');
-  const [isTesting, setIsTesting] = useState(false);
+  const [streamOutput, setStreamOutput] = useState('');
+  const [isStreaming, setIsStreaming] = useState(false);
   const [openSections, setOpenSections] = useState<string[]>(['basic', 'config']);
+  const { toast } = useToast();
+
+  // OpenAI hook with current node settings
+  const openAIOptions = selectedNode?.type === 'aiModel' ? {
+    model: String(selectedNode.data.modelType || 'gpt-3.5-turbo'),
+    temperature: Number(selectedNode.data.temperature || 0.7),
+    maxTokens: Number(selectedNode.data.maxTokens || 1000),
+    systemPrompt: String(selectedNode.data.systemPrompt || '')
+  } : {};
+
+  const { 
+    isLoading, 
+    isConnected, 
+    lastResult, 
+    error, 
+    testConnection, 
+    testNode,
+    streamResponse,
+    clearError
+  } = useOpenAI(openAIOptions);
+
+  // Test connection on component mount
+  useEffect(() => {
+    if (selectedNode?.type === 'aiModel') {
+      testConnection();
+    }
+  }, [selectedNode?.type, testConnection]);
+
+  // Show error toasts
+  useEffect(() => {
+    if (error) {
+      toast({
+        title: "API Error",
+        description: error,
+        variant: "destructive",
+      });
+      clearError();
+    }
+  }, [error, toast, clearError]);
 
   const toggleSection = (section: string) => {
     setOpenSections(prev => 
@@ -33,14 +75,60 @@ export const WorkspaceProperties = ({ selectedNode, onUpdateNode }: WorkspacePro
   const handleTestNode = async () => {
     if (!selectedNode || !testInput) return;
     
-    setIsTesting(true);
-    setTestOutput('Processing...');
+    if (selectedNode.type === 'aiModel') {
+      // Real OpenAI API call
+      const result = await testNode(testInput);
+      if (result) {
+        setTestOutput(`✅ Response from ${selectedNode.data.agentName || selectedNode.data.label}:
+
+${result.output}
+
+📊 Stats:
+• Tokens: ${result.tokens}
+• Cost: $${result.cost.toFixed(4)}
+• Duration: ${result.duration}ms
+• Model: ${result.model}`);
+
+        toast({
+          title: "Test Successful",
+          description: `Response generated in ${result.duration}ms using ${result.tokens} tokens`,
+        });
+      }
+    } else {
+      // Fallback for non-AI nodes
+      setTestOutput(`✅ Response from ${selectedNode.data.label}:\n\nProcessed: "${testInput}"\n\nThis is a simulated response for testing the node configuration.`);
+    }
+  };
+
+  const handleStreamTest = async () => {
+    if (!selectedNode || !testInput || selectedNode.type !== 'aiModel') return;
     
-    // Simulate API call with realistic delay
-    setTimeout(() => {
-      setTestOutput(`✅ Response from ${selectedNode.data.label}:\n\nProcessed: "${testInput}"\n\nThis is a simulated response for testing the node configuration. The node appears to be working correctly with the current settings.`);
-      setIsTesting(false);
-    }, 2000);
+    setIsStreaming(true);
+    setStreamOutput('');
+    setTestOutput('');
+    
+    try {
+      const stream = streamResponse(testInput, (chunk) => {
+        setStreamOutput(prev => prev + chunk);
+      });
+
+      for await (const chunk of stream) {
+        // Chunks are handled by the callback above
+      }
+      
+      toast({
+        title: "Streaming Complete",
+        description: "Real-time response finished",
+      });
+    } catch (err) {
+      toast({
+        title: "Streaming Failed",
+        description: err instanceof Error ? err.message : "Unknown error",
+        variant: "destructive",
+      });
+    } finally {
+      setIsStreaming(false);
+    }
   };
 
   if (!selectedNode) {
@@ -201,9 +289,71 @@ export const WorkspaceProperties = ({ selectedNode, onUpdateNode }: WorkspacePro
 
           <Separator className="bg-border/30" />
 
-          {/* Model-specific properties */}
+          {/* API Status for AI Models */}
           {selectedNode.type === 'aiModel' && (
             <>
+              <PropertySection 
+                id="api" 
+                title="API Status" 
+                description="OpenAI API connection and usage information"
+                icon={Key}
+              >
+                <div className="flex items-center justify-between p-3 bg-muted/20 rounded-lg border border-border/30">
+                  <div className="flex items-center gap-3">
+                    {isConnected === null ? (
+                      <Wifi className="w-4 h-4 text-muted-foreground animate-pulse" />
+                    ) : isConnected ? (
+                      <Wifi className="w-4 h-4 text-green-500" />
+                    ) : (
+                      <WifiOff className="w-4 h-4 text-destructive" />
+                    )}
+                    <div>
+                      <p className="text-sm font-medium">
+                        {isConnected === null ? 'Testing connection...' :
+                         isConnected ? 'Connected to OpenAI' : 'Connection failed'}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {isConnected === null ? 'Checking API key...' :
+                         isConnected ? 'API key is valid' : 'Check your API configuration'}
+                      </p>
+                    </div>
+                  </div>
+                  <Button
+                    onClick={testConnection}
+                    size="sm"
+                    variant="outline"
+                    disabled={isLoading}
+                    className="text-xs"
+                  >
+                    {isLoading ? 'Testing...' : 'Test'}
+                  </Button>
+                </div>
+
+                {lastResult && (
+                  <div className="space-y-2">
+                    <Label className="text-xs font-medium text-foreground">Last API Call Stats</Label>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="flex items-center gap-2 p-2 bg-muted/10 rounded-lg">
+                        <DollarSign className="w-3 h-3 text-green-500" />
+                        <div>
+                          <p className="text-xs font-medium">${lastResult.cost.toFixed(4)}</p>
+                          <p className="text-xs text-muted-foreground">Cost</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 p-2 bg-muted/10 rounded-lg">
+                        <Clock className="w-3 h-3 text-blue-500" />
+                        <div>
+                          <p className="text-xs font-medium">{lastResult.duration}ms</p>
+                          <p className="text-xs text-muted-foreground">Duration</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </PropertySection>
+
+              <Separator className="bg-border/30" />
+
               <PropertySection 
                 id="config" 
                 title="Model Configuration" 
@@ -225,9 +375,7 @@ export const WorkspaceProperties = ({ selectedNode, onUpdateNode }: WorkspacePro
                     <SelectContent>
                       <SelectItem value="gpt-4">GPT-4</SelectItem>
                       <SelectItem value="gpt-3.5-turbo">GPT-3.5 Turbo</SelectItem>
-                      <SelectItem value="claude-3">Claude 3</SelectItem>
-                      <SelectItem value="gemini-pro">Gemini Pro</SelectItem>
-                      <SelectItem value="grok">Grok</SelectItem>
+                      <SelectItem value="gpt-4-turbo">GPT-4 Turbo</SelectItem>
                     </SelectContent>
                   </Select>
                 </FormField>
@@ -297,33 +445,57 @@ export const WorkspaceProperties = ({ selectedNode, onUpdateNode }: WorkspacePro
               />
             </FormField>
             
-            <Button
-              onClick={handleTestNode}
-              disabled={!testInput || isTesting}
-              className={`
-                w-full h-9 text-sm transition-all duration-200
-                ${isTesting ? 'animate-pulse' : 'hover:scale-[1.02]'}
-              `}
-              variant="outline"
-            >
-              {isTesting ? (
-                <>Testing...</>
-              ) : (
-                <>
-                  <Play className="w-3 h-3 mr-2" />
-                  Test Node
-                </>
+            <div className="flex gap-2">
+              <Button
+                onClick={handleTestNode}
+                disabled={!testInput || isLoading}
+                className={`
+                  flex-1 h-9 text-sm transition-all duration-200
+                  ${isLoading ? 'animate-pulse' : 'hover:scale-[1.02]'}
+                `}
+                variant="outline"
+              >
+                {isLoading ? (
+                  <>Testing...</>
+                ) : (
+                  <>
+                    <Play className="w-3 h-3 mr-2" />
+                    Test Node
+                  </>
+                )}
+              </Button>
+              
+              {selectedNode?.type === 'aiModel' && (
+                <Button
+                  onClick={handleStreamTest}
+                  disabled={!testInput || isStreaming}
+                  className={`
+                    flex-1 h-9 text-sm transition-all duration-200
+                    ${isStreaming ? 'animate-pulse' : 'hover:scale-[1.02]'}
+                  `}
+                  variant="outline"
+                >
+                  {isStreaming ? (
+                    <>Streaming...</>
+                  ) : (
+                    <>
+                      <Zap className="w-3 h-3 mr-2" />
+                      Stream
+                    </>
+                  )}
+                </Button>
               )}
-            </Button>
+            </div>
             
-            {testOutput && (
+            {(testOutput || streamOutput) && (
               <FormField 
-                label="Test Output" 
-                description="Results from your test input"
+                label={isStreaming ? "Live Response Stream" : "Test Output"} 
+                description={isStreaming ? "Real-time AI response" : "Results from your test input"}
               >
                 <div className="p-4 bg-muted/50 rounded-lg border border-border/30">
                   <pre className="text-xs text-muted-foreground whitespace-pre-wrap font-mono leading-relaxed">
-                    {testOutput}
+                    {isStreaming ? streamOutput : testOutput}
+                    {isStreaming && <span className="animate-pulse">|</span>}
                   </pre>
                 </div>
               </FormField>

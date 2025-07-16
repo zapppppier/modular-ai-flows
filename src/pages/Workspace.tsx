@@ -18,6 +18,7 @@ import { WorkspaceToolbar } from '@/components/workspace/WorkspaceToolbar';
 import { WorkspaceSidebar } from '@/components/workspace/WorkspaceSidebar';
 import { WorkspaceProperties } from '@/components/workspace/WorkspaceProperties';
 import { WorkspaceLogs } from '@/components/workspace/WorkspaceLogs';
+import { openAIService } from '@/services/openai';
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@/components/ui/resizable';
 import { AIModelNode } from '@/components/workspace/nodes/AIModelNode';
 import { LogicNode } from '@/components/workspace/nodes/LogicNode';
@@ -97,16 +98,62 @@ const Workspace = () => {
     setSelectedNode(null);
   }, []);
 
-  const onRunWorkflow = useCallback(() => {
+  const onRunWorkflow = useCallback(async () => {
     setIsRunning(true);
     setLogs(prev => [...prev, '[INFO] Starting workflow execution...']);
     
-    // Simulate workflow execution
-    setTimeout(() => {
-      setLogs(prev => [...prev, '[SUCCESS] Workflow completed successfully']);
+    try {
+      // Execute workflow with real AI nodes
+      const aiNodes = nodes.filter(node => node.type === 'aiModel');
+      
+      if (aiNodes.length === 0) {
+        setLogs(prev => [...prev, '[INFO] No AI nodes found, running simulation...']);
+        setTimeout(() => {
+          setLogs(prev => [...prev, '[SUCCESS] Workflow completed successfully']);
+          setIsRunning(false);
+        }, 2000);
+        return;
+      }
+
+      for (const node of aiNodes) {
+        setLogs(prev => [...prev, `[INFO] Executing ${node.data.agentName || node.data.label}...`]);
+        
+        try {
+          const systemPrompt = String(node.data.systemPrompt || 'You are a helpful AI assistant.');
+          const testInput = 'Hello! This is a workflow execution test.';
+          
+          const startTime = Date.now();
+          const response = await openAIService.chat([
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: testInput }
+          ], {
+            model: String(node.data.modelType || 'gpt-3.5-turbo'),
+            temperature: Number(node.data.temperature || 0.7),
+            maxTokens: Number(node.data.maxTokens || 500)
+          });
+          
+          const duration = Date.now() - startTime;
+          const cost = openAIService.calculateCost(response.usage, response.model);
+          
+          setLogs(prev => [...prev, 
+            `[SUCCESS] ${node.data.agentName || node.data.label} completed`,
+            `[STATS] Duration: ${duration}ms, Tokens: ${response.usage.total_tokens}, Cost: $${cost.toFixed(4)}`,
+            `[OUTPUT] ${response.choices[0]?.message?.content?.slice(0, 100)}...`
+          ]);
+        } catch (error) {
+          setLogs(prev => [...prev, 
+            `[ERROR] ${node.data.agentName || node.data.label} failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+          ]);
+        }
+      }
+      
+      setLogs(prev => [...prev, '[SUCCESS] Workflow execution completed']);
+    } catch (error) {
+      setLogs(prev => [...prev, `[ERROR] Workflow failed: ${error instanceof Error ? error.message : 'Unknown error'}`]);
+    } finally {
       setIsRunning(false);
-    }, 3000);
-  }, []);
+    }
+  }, [nodes]);
 
   const onSaveWorkflow = useCallback(() => {
     setLogs(prev => [...prev, '[INFO] Workflow saved']);
