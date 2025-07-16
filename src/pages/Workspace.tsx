@@ -18,6 +18,7 @@ import { WorkspaceToolbar } from '@/components/workspace/WorkspaceToolbar';
 import { WorkspaceSidebar } from '@/components/workspace/WorkspaceSidebar';
 import { WorkspaceProperties } from '@/components/workspace/WorkspaceProperties';
 import { WorkspaceLogs } from '@/components/workspace/WorkspaceLogs';
+import { AIAssistant } from '@/components/workspace/AIAssistant';
 import { openAIService } from '@/services/openai';
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@/components/ui/resizable';
 import { AIModelNode } from '@/components/workspace/nodes/AIModelNode';
@@ -84,6 +85,7 @@ const Workspace = () => {
     '[INFO] Workspace initialized',
     '[INFO] Ready to build AI workflows',
   ]);
+  const [isAIAssistantOpen, setIsAIAssistantOpen] = useState(false);
 
   const onConnect = useCallback(
     (params: Connection) => setEdges((eds) => addEdge(params, eds)),
@@ -166,6 +168,37 @@ const Workspace = () => {
       setSelectedNode(null);
       setLogs(['[INFO] Workspace cleared', '[INFO] Ready to build AI workflows']);
     }
+  }, [setNodes, setEdges]);
+
+  const onGenerateWorkflow = useCallback((suggestion: any) => {
+    // Clear existing nodes first
+    setNodes([]);
+    setEdges([]);
+    setSelectedNode(null);
+    
+    // Generate nodes with proper IDs
+    const newNodes = suggestion.nodes.map((nodeData: any, index: number) => ({
+      id: `gen_${index}`,
+      type: nodeData.type,
+      position: nodeData.position,
+      data: nodeData.data,
+    }));
+
+    // Generate edges with proper source/target mapping
+    const newEdges = suggestion.connections.map((conn: any, index: number) => ({
+      id: `edge_${index}`,
+      source: `gen_${conn.source}`,
+      target: `gen_${conn.target}`,
+      type: 'smoothstep',
+      markerEnd: { type: MarkerType.ArrowClosed },
+    }));
+
+    setNodes(newNodes);
+    setEdges(newEdges);
+    setLogs(prev => [...prev, 
+      `[AI] Generated workflow: ${suggestion.description}`,
+      `[AI] Created ${newNodes.length} nodes and ${newEdges.length} connections`
+    ]);
   }, [setNodes, setEdges]);
 
   return (
@@ -260,6 +293,13 @@ const Workspace = () => {
           />
         </ResizablePanel>
       </ResizablePanelGroup>
+      
+      {/* AI Assistant */}
+      <AIAssistant 
+        onGenerateWorkflow={onGenerateWorkflow}
+        isOpen={isAIAssistantOpen}
+        onToggle={() => setIsAIAssistantOpen(!isAIAssistantOpen)}
+      />
     </div>
   );
 };
