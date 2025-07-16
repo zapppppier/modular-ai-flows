@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
-import { Bot, Send, Minimize2, Maximize2, MessageSquare } from 'lucide-react';
+import { Separator } from '@/components/ui/separator';
+import { Bot, Send, Sparkles, MessageSquare, Lightbulb, Zap } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface Message {
@@ -30,16 +30,14 @@ interface WorkflowSuggestion {
 
 interface AIAssistantProps {
   onGenerateWorkflow: (suggestion: WorkflowSuggestion) => void;
-  isOpen: boolean;
-  onToggle: () => void;
 }
 
-export function AIAssistant({ onGenerateWorkflow, isOpen, onToggle }: AIAssistantProps) {
+export function AIAssistant({ onGenerateWorkflow }: AIAssistantProps) {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
       role: 'assistant',
-      content: "Hi! I'm your AI Workflow Assistant. Describe the automation you want to build and I'll create the perfect workflow for you. For example: 'Send a Slack message when I receive an email from my boss' or 'Save new Google Sheets rows to a database'.",
+      content: "Hi! I'm your AI Workflow Assistant 🤖\n\nI can help you build powerful automations from simple descriptions. Just tell me what you want to automate and I'll create the perfect workflow for you!\n\n✨ Try asking me:\n• \"Send a Slack message when I get an email from my boss\"\n• \"Save new Google Sheets rows to a database\"\n• \"Process uploaded files and store metadata\"\n• \"Create a webhook that validates and responds to data\"",
       timestamp: new Date()
     }
   ]);
@@ -47,6 +45,12 @@ export function AIAssistant({ onGenerateWorkflow, isOpen, onToggle }: AIAssistan
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+
+  const quickActions = [
+    { label: "Email to Slack", prompt: "Send a Slack message when I receive an email from my boss", icon: Zap },
+    { label: "Sheets to DB", prompt: "Save new Google Sheets rows to a database", icon: Lightbulb },
+    { label: "File Processing", prompt: "Process uploaded files and store their metadata", icon: Sparkles },
+  ];
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -299,96 +303,140 @@ export function AIAssistant({ onGenerateWorkflow, isOpen, onToggle }: AIAssistan
     }
   };
 
-  if (!isOpen) {
-    return (
-      <Button
-        onClick={onToggle}
-        className="fixed bottom-6 right-6 rounded-full w-14 h-14 shadow-lg"
-        size="icon"
-      >
-        <Bot className="h-6 w-6" />
-      </Button>
-    );
-  }
-
   return (
-    <Card className="fixed bottom-6 right-6 w-96 h-[500px] shadow-xl flex flex-col">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-lg flex items-center gap-2">
-          <Bot className="h-5 w-5 text-primary" />
-          AI Workflow Assistant
-        </CardTitle>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={onToggle}
-          className="h-8 w-8"
-        >
-          <Minimize2 className="h-4 w-4" />
-        </Button>
-      </CardHeader>
+    <div className="h-full flex flex-col bg-workspace border-r border-border/50">
+      {/* Header */}
+      <div className="p-6 border-b border-border/50">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-primary to-primary/70 rounded-xl">
+            <Bot className="h-5 w-5 text-primary-foreground" />
+          </div>
+          <div>
+            <h2 className="text-lg font-semibold text-foreground tracking-tight">
+              AI Assistant
+            </h2>
+            <p className="text-sm text-muted-foreground">
+              Describe workflows, I'll build them
+            </p>
+          </div>
+        </div>
+
+        {/* Quick Action Buttons */}
+        <div className="space-y-2">
+          {quickActions.map((action, index) => (
+            <Button
+              key={index}
+              variant="ghost"
+              size="sm"
+              className="w-full justify-start h-auto p-3 text-left hover:bg-accent/50 transition-all duration-200"
+              onClick={() => {
+                setInput(action.prompt);
+                handleSendMessage();
+              }}
+            >
+              <action.icon className="h-4 w-4 mr-3 text-primary/70 shrink-0" />
+              <div className="flex flex-col items-start">
+                <span className="text-sm font-medium">{action.label}</span>
+                <span className="text-xs text-muted-foreground line-clamp-1">
+                  {action.prompt}
+                </span>
+              </div>
+            </Button>
+          ))}
+        </div>
+      </div>
       
-      <CardContent className="flex-1 flex flex-col p-4 pt-0">
-        <ScrollArea className="flex-1 pr-4">
-          <div className="space-y-4">
-            {messages.map((message) => (
-              <div
-                key={message.id}
-                className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
-              >
+      {/* Chat Messages */}
+      <ScrollArea className="flex-1 px-4 py-4">
+        <div className="space-y-4">
+          {messages.map((message) => (
+            <div
+              key={message.id}
+              className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+            >
+              <div className="flex items-start gap-3 max-w-[85%]">
+                {message.role === 'assistant' && (
+                  <div className="flex items-center justify-center w-7 h-7 bg-gradient-to-br from-primary to-primary/70 rounded-lg shrink-0 mt-1">
+                    <Bot className="h-3.5 w-3.5 text-primary-foreground" />
+                  </div>
+                )}
                 <div
-                  className={`max-w-[80%] rounded-lg p-3 ${
+                  className={`rounded-2xl px-4 py-3 ${
                     message.role === 'user'
-                      ? 'bg-primary text-primary-foreground'
-                      : 'bg-muted'
+                      ? 'bg-primary text-primary-foreground ml-auto'
+                      : 'bg-accent/50 text-accent-foreground'
                   }`}
                 >
-                  <p className="text-sm">{message.content}</p>
-                  <p className="text-xs opacity-70 mt-1">
-                    {message.timestamp.toLocaleTimeString()}
+                  <p className="text-sm whitespace-pre-wrap leading-relaxed">
+                    {message.content}
+                  </p>
+                  <p className="text-xs opacity-60 mt-2">
+                    {message.timestamp.toLocaleTimeString([], { 
+                      hour: '2-digit', 
+                      minute: '2-digit' 
+                    })}
                   </p>
                 </div>
               </div>
-            ))}
-            {isLoading && (
-              <div className="flex justify-start">
-                <div className="bg-muted rounded-lg p-3">
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
-                    <div className="w-2 h-2 bg-primary rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
-                    <div className="w-2 h-2 bg-primary rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
+            </div>
+          ))}
+          {isLoading && (
+            <div className="flex justify-start">
+              <div className="flex items-start gap-3">
+                <div className="flex items-center justify-center w-7 h-7 bg-gradient-to-br from-primary to-primary/70 rounded-lg">
+                  <Bot className="h-3.5 w-3.5 text-primary-foreground" />
+                </div>
+                <div className="bg-accent/50 rounded-2xl px-4 py-3">
+                  <div className="flex items-center gap-1">
+                    <div className="w-2 h-2 bg-primary/60 rounded-full animate-pulse"></div>
+                    <div className="w-2 h-2 bg-primary/60 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
+                    <div className="w-2 h-2 bg-primary/60 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
                   </div>
                 </div>
               </div>
-            )}
-          </div>
-          <div ref={messagesEndRef} />
-        </ScrollArea>
+            </div>
+          )}
+        </div>
+        <div ref={messagesEndRef} />
+      </ScrollArea>
 
-        <div className="mt-4 flex gap-2">
+      {/* Input Area */}
+      <div className="p-4 border-t border-border/50 bg-workspace">
+        <div className="flex gap-2 mb-3">
           <Input
-            placeholder="Describe your automation..."
+            placeholder="Describe the automation you want to build..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={handleKeyPress}
             disabled={isLoading}
-            className="flex-1"
+            className="flex-1 h-12 px-4 text-sm bg-background border-border/50 focus:border-primary/50 transition-all duration-200"
           />
           <Button
             onClick={handleSendMessage}
             disabled={isLoading || !input.trim()}
             size="icon"
+            className="h-12 w-12 shrink-0"
           >
             <Send className="h-4 w-4" />
           </Button>
         </div>
 
-        <div className="mt-3 flex flex-wrap gap-1">
-          <Badge variant="secondary" className="text-xs">Email workflows</Badge>
-          <Badge variant="secondary" className="text-xs">API integrations</Badge>
-          <Badge variant="secondary" className="text-xs">Data processing</Badge>
+        {/* Quick Tags */}
+        <div className="flex flex-wrap gap-1.5">
+          <Badge variant="secondary" className="text-xs px-2 py-1">
+            <MessageSquare className="h-3 w-3 mr-1" />
+            Email
+          </Badge>
+          <Badge variant="secondary" className="text-xs px-2 py-1">
+            <Zap className="h-3 w-3 mr-1" />
+            Webhooks
+          </Badge>
+          <Badge variant="secondary" className="text-xs px-2 py-1">
+            <Sparkles className="h-3 w-3 mr-1" />
+            Data
+          </Badge>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

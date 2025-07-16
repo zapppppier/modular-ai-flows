@@ -85,7 +85,7 @@ const Workspace = () => {
     '[INFO] Workspace initialized',
     '[INFO] Ready to build AI workflows',
   ]);
-  const [isAIAssistantOpen, setIsAIAssistantOpen] = useState(false);
+  
 
   const onConnect = useCallback(
     (params: Connection) => setEdges((eds) => addEdge(params, eds)),
@@ -213,8 +213,15 @@ const Workspace = () => {
       
       {/* Resizable Main Layout */}
       <ResizablePanelGroup direction="horizontal" className="flex-1">
-        {/* Sidebar Panel */}
-        <ResizablePanel defaultSize={25} minSize={15} maxSize={40}>
+        {/* AI Assistant Panel */}
+        <ResizablePanel defaultSize={30} minSize={20} maxSize={45}>
+          <AIAssistant onGenerateWorkflow={onGenerateWorkflow} />
+        </ResizablePanel>
+        
+        <ResizableHandle withHandle />
+        
+        {/* Node Library Panel */}
+        <ResizablePanel defaultSize={20} minSize={15} maxSize={35}>
           <WorkspaceSidebar 
             onAddNode={(nodeData) => {
               const newNode: Node = {
@@ -232,7 +239,7 @@ const Workspace = () => {
         <ResizableHandle withHandle />
         
         {/* Main Content Panel (Canvas + Logs) */}
-        <ResizablePanel defaultSize={50} minSize={30}>
+        <ResizablePanel defaultSize={35} minSize={25}>
           <ResizablePanelGroup direction="vertical">
             {/* Canvas Panel */}
             <ResizablePanel defaultSize={70} minSize={40}>
@@ -277,7 +284,7 @@ const Workspace = () => {
         <ResizableHandle withHandle />
         
         {/* Properties Panel */}
-        <ResizablePanel defaultSize={25} minSize={15} maxSize={40}>
+        <ResizablePanel defaultSize={15} minSize={10} maxSize={30}>
           <WorkspaceProperties 
             selectedNode={selectedNode}
             onUpdateNode={(nodeId, data) => {
@@ -293,13 +300,6 @@ const Workspace = () => {
           />
         </ResizablePanel>
       </ResizablePanelGroup>
-      
-      {/* AI Assistant */}
-      <AIAssistant 
-        onGenerateWorkflow={onGenerateWorkflow}
-        isOpen={isAIAssistantOpen}
-        onToggle={() => setIsAIAssistantOpen(!isAIAssistantOpen)}
-      />
     </div>
   );
 };
