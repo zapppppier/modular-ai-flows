@@ -38,6 +38,7 @@ import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Separator } from '@/components/ui/separator';
+import { GeometricIcons, GeometricNodeCard } from './CustomGeometricIcons';
 
 // Import brand logos
 import openaiLogo from '@/assets/logos/openai-logo.png';
@@ -70,19 +71,20 @@ interface NodeTemplate {
   logo?: string;
   model?: string;
   color: string;
+  category?: string;
 }
 
-// Category icons for better visual hierarchy
+// Custom geometric category icons for better visual hierarchy
 const categoryIcons = {
-  'AI Models': Bot,
-  'Processing': Settings,
-  'Integrations': Share,
-  'Communication': MessageCircle,
-  'Data Sources': Database,
-  'File & Storage': FolderOpen,
-  'Marketing': Target,
-  'Utilities': Zap,
-  'Logic': GitBranch,
+  'AI Models': GeometricIcons.aiModels,
+  'Processing': GeometricIcons.aiModels,
+  'Integrations': GeometricIcons.integrations,
+  'Communication': GeometricIcons.communication,
+  'Data Sources': GeometricIcons.dataSources,
+  'File & Storage': GeometricIcons.dataSources,
+  'Marketing': GeometricIcons.integrations,
+  'Utilities': GeometricIcons.utilities,
+  'Logic': GeometricIcons.logic,
 };
 
 const nodeTemplates: { [key: string]: NodeTemplate[] } = {
@@ -95,6 +97,7 @@ const nodeTemplates: { [key: string]: NodeTemplate[] } = {
       logo: openaiLogo,
       model: 'openai',
       color: 'hsl(var(--openai))',
+      category: 'aiModels',
     },
     {
       id: 'claude-3',
@@ -104,6 +107,7 @@ const nodeTemplates: { [key: string]: NodeTemplate[] } = {
       logo: claudeLogo,
       model: 'claude',
       color: 'hsl(var(--claude))',
+      category: 'aiModels',
     },
     {
       id: 'gemini-pro',
@@ -113,6 +117,7 @@ const nodeTemplates: { [key: string]: NodeTemplate[] } = {
       logo: geminiLogo,
       model: 'gemini',
       color: 'hsl(var(--gemini))',
+      category: 'aiModels',
     },
     {
       id: 'grok',
@@ -122,6 +127,7 @@ const nodeTemplates: { [key: string]: NodeTemplate[] } = {
       logo: grokLogo,
       model: 'grok',
       color: 'hsl(var(--grok))',
+      category: 'aiModels',
     },
     {
       id: 'deepseek',
@@ -131,6 +137,7 @@ const nodeTemplates: { [key: string]: NodeTemplate[] } = {
       logo: deepseekLogo,
       model: 'deepseek',
       color: 'hsl(var(--deepseek))',
+      category: 'aiModels',
     },
   ],
   'Processing': [
@@ -141,6 +148,7 @@ const nodeTemplates: { [key: string]: NodeTemplate[] } = {
       description: 'Process and analyze text content',
       icon: FileText,
       color: 'hsl(var(--node-text))',
+      category: 'aiModels',
     },
     {
       id: 'code-generator',
@@ -490,74 +498,25 @@ export const WorkspaceSidebar = ({ onAddNode }: WorkspaceSidebarProps) => {
                     </Button>
                   </CollapsibleTrigger>
                   
-                  <CollapsibleContent className="space-y-1.5 pt-1 pb-2">
-                    {templates.map((template, index) => {
-                      const IconComponent = template.icon;
-                      return (
-                        <div
-                          key={template.id}
-                          className={`
-                            group/item relative backdrop-blur-sm border border-border/40 rounded-xl p-3 
-                            cursor-grab active:cursor-grabbing transition-all duration-200 ml-2
-                            hover:border-primary/30 hover:bg-card/60 hover:shadow-md hover:-translate-y-0.5
-                            animate-fade-in
-                          `}
-                          style={{
-                            animationDelay: `${index * 50}ms`,
-                            background: 'var(--glass-bg)',
-                          }}
-                          draggable
-                          onDragStart={(e) => {
-                            e.dataTransfer.setData('application/reactflow', JSON.stringify(template));
-                            e.dataTransfer.effectAllowed = 'move';
-                          }}
-                          onClick={() => onAddNode(template)}
-                        >
-                          {/* Subtle glow effect */}
-                          <div 
-                            className="absolute inset-0 rounded-xl opacity-0 group-hover/item:opacity-20 transition-opacity duration-300"
-                            style={{
-                              background: `radial-gradient(circle at 50% 50%, ${template.color}, transparent 70%)`
-                            }}
-                          />
-                          
-                          <div className="flex items-start gap-3 relative z-10">
-                            <div 
-                              className={`
-                                w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 
-                                group-hover/item:scale-110 transition-all duration-200
-                              `}
-                              style={{ 
-                                backgroundColor: template.logo ? 'hsl(var(--card))' : `${template.color}15`, 
-                                color: template.color,
-                                border: `1px solid ${template.color}30`,
-                                boxShadow: `0 2px 8px ${template.color}20`
-                              }}
-                            >
-                               {template.logo ? (
-                                 <img 
-                                   src={template.logo} 
-                                   alt={`${template.label} logo`}
-                                   className="w-5 h-5 object-contain"
-                                   key={template.id}
-                                 />
-                               ) : (
-                                IconComponent && <IconComponent className="w-4 h-4" />
-                              )}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <h4 className="text-sm font-medium text-foreground group-hover/item:text-primary transition-colors duration-200 tracking-tight">
-                                {template.label}
-                              </h4>
-                              <p className="text-xs text-muted-foreground mt-1 leading-relaxed tracking-wide">
-                                {template.description}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </CollapsibleContent>
+                   <CollapsibleContent className="space-y-1.5 pt-1 pb-2">
+                    {templates.map((template, index) => (
+                      <div
+                        key={template.id}
+                        className="ml-2"
+                        draggable
+                        onDragStart={(e) => {
+                          e.dataTransfer.setData('application/reactflow', JSON.stringify(template));
+                          e.dataTransfer.effectAllowed = 'move';
+                        }}
+                      >
+                        <GeometricNodeCard 
+                          template={template} 
+                          onAddNode={onAddNode} 
+                          index={index}
+                        />
+                      </div>
+                    ))}
+                   </CollapsibleContent>
                 </Collapsible>
                 
                 {/* Separator between categories */}

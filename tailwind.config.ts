@@ -125,6 +125,41 @@ export default {
 				'bounce-gentle': {
 					'0%, 100%': { transform: 'translateY(0)' },
 					'50%': { transform: 'translateY(-2px)' }
+				},
+				'geometric-rotate': {
+					'0%': { transform: 'rotate(0deg) scale(1)' },
+					'25%': { transform: 'rotate(90deg) scale(1.05)' },
+					'50%': { transform: 'rotate(180deg) scale(1)' },
+					'75%': { transform: 'rotate(270deg) scale(1.05)' },
+					'100%': { transform: 'rotate(360deg) scale(1)' }
+				},
+				'crystalline-pulse': {
+					'0%, 100%': { 
+						transform: 'scale(1) rotate(0deg)',
+						filter: 'hue-rotate(0deg)'
+					},
+					'50%': { 
+						transform: 'scale(1.02) rotate(2deg)',
+						filter: 'hue-rotate(10deg)'
+					}
+				},
+				'neural-flow': {
+					'0%': { 
+						opacity: '0.3',
+						transform: 'translateX(-100%) scale(0.8)'
+					},
+					'50%': {
+						opacity: '1',
+						transform: 'translateX(0%) scale(1)'
+					},
+					'100%': { 
+						opacity: '0.3',
+						transform: 'translateX(100%) scale(0.8)'
+					}
+				},
+				'gradient-shift': {
+					'0%, 100%': { backgroundPosition: '0% 50%' },
+					'50%': { backgroundPosition: '100% 50%' }
 				}
 			},
 			animation: {
@@ -137,7 +172,11 @@ export default {
 				'pulse-glow': 'pulse-glow 2s ease-in-out infinite',
 				'shimmer': 'shimmer 2s linear infinite',
 				'flow': 'flow 3s linear infinite',
-				'bounce-gentle': 'bounce-gentle 2s ease-in-out infinite'
+				'bounce-gentle': 'bounce-gentle 2s ease-in-out infinite',
+				'geometric-rotate': 'geometric-rotate 8s ease-in-out infinite',
+				'crystalline-pulse': 'crystalline-pulse 4s ease-in-out infinite',
+				'neural-flow': 'neural-flow 3s ease-in-out infinite',
+				'gradient-shift': 'gradient-shift 6s ease infinite'
 			}
 		}
 	},
